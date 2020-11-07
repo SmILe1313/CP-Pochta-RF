@@ -1,0 +1,12 @@
+ru\smile\services\OtpravkaService.class
+ru\smile\entities\TestTodos.class
+ru\smile\repositories\UserRepository.class
+ru\smile\config\RootConfig.class
+ru\smile\entities\User.class
+ru\smile\config\WebAppInitializer.class
+ru\smile\services\UserService.class
+ru\smile\config\WebMvcConfig.class
+ru\smile\config\JpaConfig.class
+ru\smile\controller\HomeController.class
+ru\smile\services\TestService.class
+ru\smile\controller\CrudController.class
