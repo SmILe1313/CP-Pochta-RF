@@ -43,13 +43,13 @@ public class CleanAddress {
   public final static Set<String> goodValidation = new HashSet<>(Arrays.asList("VALIDATED", "OVERRIDDEN", "CONFIRMED_MANUALLY"));
 
   @JsonIgnore
-  private Long user_id;
+  private Long userId;
 
   @Id
   private Long id;
 
   @JsonProperty("address-type")
-  private String address_type;
+  private String addressType;
 
   private String area;
 
@@ -68,15 +68,15 @@ public class CleanAddress {
   private String location;
 
   @JsonProperty("num-address-type")
-  private String num_address_type;
+  private String numAddressType;
 
   @JsonProperty("original-address")
-  private String original_address;
+  private String originalAddress;
 
   private String place;
 
   @JsonProperty("quality-code")
-  private String quality_code;
+  private String qualityCode;
 
   private String region;
 
@@ -87,17 +87,39 @@ public class CleanAddress {
   private String street;
 
   @JsonProperty("validation-code")
-  private String validation_code;
+  private String validationCode;
 
   public CleanAddress() {
   }
 
-  public String getAddress_type() {
-    return address_type;
+  public CleanAddress(Long id, String addressType, String area, String building, String corpus, String hotel, String house, String index, String letter, String location, String numAddressType, String originalAddress, String place, String qualityCode, String region, String room, String slash, String street, String validationCode) {
+    this.id = id;
+    this.addressType = addressType;
+    this.area = area;
+    this.building = building;
+    this.corpus = corpus;
+    this.hotel = hotel;
+    this.house = house;
+    this.index = index;
+    this.letter = letter;
+    this.location = location;
+    this.numAddressType = numAddressType;
+    this.originalAddress = originalAddress;
+    this.place = place;
+    this.qualityCode = qualityCode;
+    this.region = region;
+    this.room = room;
+    this.slash = slash;
+    this.street = street;
+    this.validationCode = validationCode;
   }
 
-  public void setAddress_type(String address_type) {
-    this.address_type = address_type;
+  public String getAddressType() {
+    return addressType;
+  }
+
+  public void setAddressType(String addressType) {
+    this.addressType = addressType;
   }
 
   public String getArea() {
@@ -172,20 +194,20 @@ public class CleanAddress {
     this.location = location;
   }
 
-  public String getNum_address_type() {
-    return num_address_type;
+  public String getNumAddressType() {
+    return numAddressType;
   }
 
-  public void setNum_address_type(String num_address_type) {
-    this.num_address_type = num_address_type;
+  public void setNumAddressType(String numAddressType) {
+    this.numAddressType = numAddressType;
   }
 
-  public String getOriginal_address() {
-    return original_address;
+  public String getOriginalAddress() {
+    return originalAddress;
   }
 
-  public void setOriginal_address(String original_address) {
-    this.original_address = original_address;
+  public void setOriginalAddress(String originalAddress) {
+    this.originalAddress = originalAddress;
   }
 
   public String getPlace() {
@@ -196,12 +218,12 @@ public class CleanAddress {
     this.place = place;
   }
 
-  public String getQuality_code() {
-    return quality_code;
+  public String getQualityCode() {
+    return qualityCode;
   }
 
-  public void setQuality_code(String quality_code) {
-    this.quality_code = quality_code;
+  public void setQualityCode(String qualityCode) {
+    this.qualityCode = qualityCode;
   }
 
   public String getRegion() {
@@ -236,28 +258,28 @@ public class CleanAddress {
     this.street = street;
   }
 
-  public String getValidation_code() {
-    return validation_code;
+  public String getValidationCode() {
+    return validationCode;
   }
 
-  public void setValidation_code(String validation_code) {
-    this.validation_code = validation_code;
-  }
-
-  public Long getUser_id() {
-    return user_id;
-  }
-
-  public void setUser_id(Long user_id) {
-    this.user_id = user_id;
+  public void setValidationCode(String validationCode) {
+    this.validationCode = validationCode;
   }
 
   public Boolean isGoodQuality () {
-    return goodQuality.contains(this.quality_code);
+    return goodQuality.contains(this.qualityCode);
   }
 
   public Boolean isValidationQuality () {
-    return goodValidation.contains(this.validation_code);
+    return goodValidation.contains(this.validationCode);
+  }
+
+  public Long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
 }

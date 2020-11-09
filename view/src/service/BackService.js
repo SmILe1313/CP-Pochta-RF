@@ -16,8 +16,9 @@ const apiExcel = '/excel'
 
 const bs = {
 
-  getDataAsync (entity, id) {
-    return HTTP.get(backLink + '/' + entity + '/' + id)
+  // Получить entityName (тут просто название) по id
+  getDataAsync (entityName, id) {
+    return HTTP.get(backLink + '/' + entityName + '/' + id)
       .then(resp => {
         if (resp !== 'error') {
           return Promise.resolve(resp)
@@ -30,6 +31,7 @@ const bs = {
       })
   },
 
+  // Создать объект entity (тут объект целиком)
   createAsync (entity) {
     const cnfBody = {
       data: entity
@@ -47,6 +49,7 @@ const bs = {
       })
   },
 
+  // Обновить entity (тут объект целиком) по id
   updateAsync (entity, id) {
     const cnfBody = {
       data: entity
@@ -64,11 +67,12 @@ const bs = {
       })
   },
 
-  deleteAsync (entity, id) {
+  // Удалить entityName (тут просто название) по id
+  deleteAsync (entityName, id) {
     // let cnfBody = {
     //   data: entity
     // }
-    return HTTP.delete(backLink + '/' + entity + '/' + id)
+    return HTTP.delete(backLink + '/' + entityName + '/' + id)
       .then(resp => {
         if (resp !== 'error') {
           return Promise.resolve(resp)
@@ -81,6 +85,7 @@ const bs = {
       })
   },
 
+  // Отправить НЕнормализованный файл для обработки
   cleanAddressAsync (file) {
     const cnfBody = {
       data: file
@@ -98,14 +103,27 @@ const bs = {
       })
   },
 
+  // Скачать нормализованный эксель-файл в виде xlsx
+  downloadCleanAddressesXLSX () {
+    return getExeclDataAsync(backLink + apiExcel + "/download/xlsx")
+  },
+
+  // Скачать нормализованный эксель-файл в виде csv
+  downloadCleanAddressesCSV() {
+    return getExeclDataAsync(backLink + apiExcel + "/download/csv")
+  },
+
+  // Получить из базы список нормализованных адресов
   getCleanAddresses () {
     return getExeclDataAsync(backLink + apiExcel + "/get/clean")
   },
 
+  // Получить из базы список НЕнормализованных адресов
   getToCleanAddresses () {
     return getExeclDataAsync(backLink + apiExcel + "/get/toclean")
   },
 
+  // Общий метод для экселя
   getExeclDataAsync (apiLink) {
     return HTTP.get(apiLink)
       .then(resp => {
@@ -120,6 +138,7 @@ const bs = {
       })
   },
 
+  // Просто тестовый метод, который отправляет запрос на бэк, а тот отправляет на сторонний сервис
   getTest () {
     return HTTP.get(backLink + '/testGetService')
       .then(resp => {

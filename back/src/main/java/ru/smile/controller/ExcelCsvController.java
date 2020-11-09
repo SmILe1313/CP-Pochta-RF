@@ -1,7 +1,11 @@
 package ru.smile.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,39 +16,77 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
-import ru.smile.services.ExcelService;
+import ru.smile.services.ExcelCsvService;
+import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin()
+@CrossOrigin
 @Controller
 @RequestMapping("/excel")
 public class ExcelCsvController {
 
-  @Autowired ExcelService excelService;
+  @Autowired
+  ExcelCsvService excelService;
 
   @PostMapping("/clean/address")
   public ResponseEntity<List<CleanAddress>> cleanFile(@RequestParam("file") MultipartFile file) {
     String message = "";
 
+    // Если файл xlsx
     if (ExcelHelper.hasExcelFormat(file)) {
       try {
-        List<CleanAddress> cleanAddresses = excelService.saveAndNormalize(file);
+        List<CleanAddress> cleanAddresses = excelService.saveAndNormalizeXlsx(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
-        return new ResponseEntity<List<CleanAddress>>(cleanAddresses, HttpStatus.OK);
+        return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
 //        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
       } catch (Exception e) {
-        message = "Невозможно загрузить xlsx-файл" + file.getOriginalFilename() + "!";
-        return new ResponseEntity<List<CleanAddress>>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        message = "Невозможно загрузить xlsx-файл: " + file.getOriginalFilename() + "!";
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
 //        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
       }
     }
 
+    // Если файл csv
+    if (CsvHelper.hasCSVFormat(file)) {
+      try {
+        List<CleanAddress> cleanAddresses = excelService.saveAndNormalizeCsv(file);
+
+        message = "Файл успешно обработан: " + file.getOriginalFilename();
+        return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
+      } catch (Exception e) {
+        message = "Невозможно загрузить csv-файл: " + file.getOriginalFilename() + "!";
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+      }
+    }
+
     message = "Пожалуйста, выберите xlsx или csv файл!";
-    return new ResponseEntity<List<CleanAddress>>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+  }
+
+  @GetMapping("/download/xlsx")
+  public ResponseEntity<Resource> getFileXlsx() {
+    String filename = "Нормализованные адреса.xlsx";
+    InputStreamResource file = new InputStreamResource(excelService.downloadFileXlsx());
+
+    return ResponseEntity.ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+      .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+      .body(file);
+  }
+
+  @GetMapping("/download/csv")
+  public ResponseEntity<Resource> getFileCsv() {
+    String filename = "Нормализованные адреса.csv";
+    InputStreamResource file = new InputStreamResource(excelService.downloadFileCsv());
+
+    return ResponseEntity.ok()
+      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+      .contentType(MediaType.parseMediaType("application/csv"))
+      .body(file);
   }
 
   @GetMapping("/get/clean")
@@ -76,5 +118,6 @@ public class ExcelCsvController {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 }
 

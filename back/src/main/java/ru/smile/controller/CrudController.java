@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.smile.entities.User;
 import ru.smile.services.UserService;
 
-import java.util.List;
-
 @CrossOrigin
 @RestController
 public class CrudController {

@@ -55,13 +55,13 @@ public class ApiController {
   @GetMapping("/testGetService")
   public ResponseEntity<List<TestTodos>> testGetService(){
     List<TestTodos> testTodosList = TestService.getObject();
-    return new ResponseEntity<List<TestTodos>>(testTodosList, HttpStatus.OK);
+    return new ResponseEntity<>(testTodosList, HttpStatus.OK);
   }
 
   @GetMapping("/testPostService")
   public ResponseEntity<TestTodos> testPosrService(){
     TestTodos testTodos = TestService.postObject();
-    return new ResponseEntity<TestTodos>(testTodos, HttpStatus.OK);
+    return new ResponseEntity<>(testTodos, HttpStatus.OK);
   }
 
 }

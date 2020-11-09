@@ -17,16 +17,21 @@ import javax.persistence.Table;
 public class ToCleanAddress {
 
   @JsonIgnore
-  private Long user_id;
+  private Long userId;
 
   @Id
   private Long id;
 
   @JsonProperty("original-address")
-  private String original_address;
+  private String originalAddress;
 
 
   public ToCleanAddress() {
+  }
+
+  public ToCleanAddress(Long id, String originalAddress) {
+    this.id = id;
+    this.originalAddress = originalAddress;
   }
 
   public Long getId() {
@@ -37,19 +42,19 @@ public class ToCleanAddress {
     this.id = id;
   }
 
-  public String getOriginal_address() {
-    return original_address;
+  public String getOriginalAddress() {
+    return originalAddress;
   }
 
-  public void setOriginal_address(String original_address) {
-    this.original_address = original_address;
+  public void setOriginalAddress(String originalAddress) {
+    this.originalAddress = originalAddress;
   }
 
-  public Long getUser_id() {
-    return user_id;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setUser_id(Long user_id) {
-    this.user_id = user_id;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 }
