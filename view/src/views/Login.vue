@@ -22,7 +22,11 @@
 					required
 				></b-form-input>
 			</b-form-group>
-			<b-button type="submit" squared variant="outline-primary">Войти</b-button>
+
+			<div class="login-buttons">
+				<b-button type="submit" squared variant="outline-primary">Войти</b-button>
+				<logoEsia class="logo-esia"/>
+			</div>
 		</b-form>
 		
 	</div>
@@ -30,6 +34,7 @@
 
 <script>
 import logo from '@/components/logo'
+import logoEsia from '@/components/logoEsia'
 export default {
   data () {
     return {
@@ -50,7 +55,8 @@ export default {
 		}
 	},
 	components: {
-		logo
+		logo,
+		logoEsia
 	}
 }
 </script>
@@ -68,6 +74,14 @@ export default {
 
 .login-form
 	// margin-bottom auto
+
+.login-buttons
+	display flex
+	justify-content space-between
+
+.logo-esia
+	width 38px
+	height 38px
 
 .login-header
 	display flex
