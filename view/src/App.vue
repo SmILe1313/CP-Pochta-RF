@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <b-navbar toggleable="lg" type="dark" variant="dark">
+      <b-navbar toggleable="lg" type="dark" variant="primary" v-if="loggedIn">
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
@@ -24,7 +24,21 @@
       <router-view/>
   </div>
 </template>
-
+<script>
+export default {
+  data () {
+    return {
+    }
+  },
+  methods: {
+  },
+  computed: {
+    loggedIn () {
+      return !this.$route.path.includes('login')
+    }
+  }
+}
+</script>
 <style lang="stylus">
 .custom-file-input:lang(ru)
   ~ .custom-file-label
