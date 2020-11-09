@@ -15,6 +15,8 @@
         <div class="mt-3">Выбранный файл: {{ file ? file.name : '' }}</div>
         <b-button @click="upload" :disabled="!file" class="mr-2">Загрузить</b-button>
 
+        <b-button @click="testApi"  class="mr-2">Тест</b-button>
+
       </b-tab>
       <b-tab title="Просмотр" lazy>
         <template #title>
@@ -53,6 +55,11 @@ export default {
         this.loading = false
         this.tabIndex = 1
       }, 4000)
+    },
+    testApi () {
+      this.$bs.getTest().then(eData => {
+        console.log(eData)
+      })
     }
   }
 }
