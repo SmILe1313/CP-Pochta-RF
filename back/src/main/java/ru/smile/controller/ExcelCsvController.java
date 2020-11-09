@@ -26,14 +26,14 @@ public class ExcelCsvController {
   @Autowired ExcelService excelService;
 
   @PostMapping("/clean/address")
-  public ResponseEntity<List<CleanAddress>> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<List<CleanAddress>> cleanFile(@RequestParam("file") MultipartFile file) {
     String message = "";
 
     if (ExcelHelper.hasExcelFormat(file)) {
       try {
         List<CleanAddress> cleanAddresses = excelService.saveAndNormalize(file);
 
-        message = "Файл успешно загружен: " + file.getOriginalFilename();
+        message = "Файл успешно обработан: " + file.getOriginalFilename();
         return new ResponseEntity<List<CleanAddress>>(cleanAddresses, HttpStatus.OK);
 //        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
       } catch (Exception e) {

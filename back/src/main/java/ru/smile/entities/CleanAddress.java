@@ -2,8 +2,8 @@ package ru.smile.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
 
+import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Arrays;

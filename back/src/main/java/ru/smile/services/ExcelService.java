@@ -2,6 +2,7 @@ package ru.smile.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
+@Transactional
 public class ExcelService {
 
   @Autowired ToCleanAddressRepository toCleanAddressRepository;

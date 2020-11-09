@@ -4,18 +4,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /** Нормализация адреса */
+@Service
 public class OtpravkaService {
 
   private final static String apiLink = "https://otpravka-api.pochta.ru/1.0/clean/address";
