@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import bs from '@/service/BackService'
 export default {
   data () {
     return {
@@ -49,7 +50,12 @@ export default {
   },
   methods: {
     upload () {
-      console.log('Загрузить файл')
+      bs.uploadFileAsync({
+        uploaded: 0,
+        error: false,
+        responseReceived: false,
+        data: this.file
+      })
       this.loading = true
       setTimeout(() => {
         this.loading = false

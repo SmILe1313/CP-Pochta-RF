@@ -11,7 +11,7 @@ const HTTP = axios.create({
   timeout: 150000
 })
 
-const backLink = 'http://localhost:9000'
+const backLink = 'http://192.169.6.6:9000'
 const apiExcel = '/excel'
 
 const bs = {
@@ -86,20 +86,28 @@ const bs = {
   },
 
   // Отправить НЕнормализованный файл для обработки
-  cleanAddressAsync (file) {
-    const cnfBody = {
-      data: file
+  uploadFileAsync (file) {
+    const config = {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (progressEvent) => {
+        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        file.uploaded = percentCompleted
+      }
     }
-    return HTTP.post(backLink + '/' + apiExcel + '/clean/address' + entity + cnfBody)
+
+    let formData = new FormData()
+    formData.append('files', file.data)
+    return HTTP.post(backLink + apiExcel + '/clean/address', formData, config)
       .then(resp => {
-        if (resp !== 'error') {
-          return Promise.resolve(resp)
-        } else {
-          return Promise.reject(new Error('getting error'))
-        }
+        file.error = resp.error // условно
+        file.responseReceived = true
+        return resp
       })
       .catch(e => {
         console.log(e)
+        file.uploaded = 100
+        file.error = true
+        file.responseReceived = true
       })
   },
 
