@@ -2,7 +2,7 @@
 
     <b-tabs v-model="tabIndex">
 
-      <b-tab title="Загрузить">
+      <b-tab title="Загрузка">
         <b-container>
 
           <b-form-file
@@ -20,13 +20,16 @@
 
         </b-container>
       </b-tab>
-      <b-tab title="Просмотр" lazy>
+
+      <b-tab title="Просмотр" lazy :disabled="!items.length">
         <template #title>
           <b-spinner type="border" small v-if="loading"></b-spinner> Просмотр
         </template>
-
         <tablePreview :data="items"/>
+      </b-tab>
 
+      <b-tab title="Исправление" content-class="mt-3" :disabled="!items.length">
+        <editCard :data="items"/>
       </b-tab>
 
     </b-tabs>
@@ -34,6 +37,7 @@
 
 <script>
 import tablePreview from '@/components/tablePreview'
+import editCard from '@/components/editCard'
 export default {
   data () {
     return {
@@ -63,7 +67,8 @@ export default {
     }
   },
   components: {
-    tablePreview
+    tablePreview,
+    editCard
   }
 }
 </script>

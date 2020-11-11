@@ -6,7 +6,7 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item href="#/">Главная</b-nav-item>
-            <b-nav-item href="#/upload">Загрузить</b-nav-item>
+            <b-nav-item href="#/handle">Обработка</b-nav-item>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">

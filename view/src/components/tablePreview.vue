@@ -113,7 +113,10 @@ export default {
     // Сохряем одиночную запись
     save (row) {
       row._saving = true
-      const clearSaving = () => setTimeout(() => row._saving = false, 500)
+      const clearSaving = () => setTimeout(() => {
+        row._saving = false
+        row._changed = false
+      }, 500)
       return this.$bs.updateAsync(row, row.id)
         .then(resp => {
             row._saved = true

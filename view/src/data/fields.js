@@ -1,67 +1,106 @@
 const fieldsObject = {
   check: {
-    label: 'Действия'
+    label: 'Действия',
+    type: 'system'
   },
   id: {
-    label: 'ID'
+    label: 'ID',
+    type: 'number'
   },
   'address-type': {
-    label: 'Тип адреса'
+    label: 'Тип адреса',
+    type: 'text'
   },
   area: {
-    label: 'Район'
+    label: 'Район',
+    type: 'text'
   },
   region: {
-    label: 'Область, регион'
+    label: 'Область, регион',
+    type: 'text'
   },
   place: {
-    label: 'Населенный пункт'
+    label: 'Населенный пункт',
+    type: 'text'
   },
   location: {
-    label: 'Микрорайон'
+    label: 'Микрорайон',
+    type: 'text'
   },
   street: {
-    label: 'Улица'
+    label: 'Улица',
+    type: 'text'
   },
   house: {
-    label: 'Номер здания'
+    label: 'Номер здания',
+    type: 'text'
   },
   building: {
-    label: 'Строение'
+    label: 'Строение',
+    type: 'text'
   },
   corpus: {
-    label: 'Корпус'
+    label: 'Корпус',
+    type: 'text'
   },
   slash: {
-    label: 'Дробь'
+    label: 'Дробь',
+    type: 'text'
   },
   letter: {
-    label: 'Литера'
+    label: 'Литера',
+    type: 'text'
   },
   room: {
-    label: 'Номер помещения'
+    label: 'Номер помещения',
+    type: 'text'
   },
   index: {
-    label: 'Почтовый индекс'
+    label: 'Почтовый индекс',
+    type: 'number'
   },
   hotel: {
-    label: 'Название гостиницы'
+    label: 'Название гостиницы',
+    type: 'text'
   },
   'num-address-type': {
-    label: 'Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта'
+    label: 'Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта',
+    type: 'number'
   },
   'quality-code': {
-    label: 'Код качества нормализации адреса'
+    label: 'Код качества нормализации адреса',
+    type: 'text'
   },
   'validation-code': {
-    label: 'Код проверки нормализации адреса'
+    label: 'Код проверки нормализации адреса',
+    type: 'text'
   },
   'original-address': {
-    label: 'Оригинальные адрес одной строкой'
+    label: 'Оригинальные адрес одной строкой',
+    type: 'text'
   }
 }
-
+const fieldsGroup = [
+  ['address-type','area'],
+  ['region', 'place'],
+  ['location', 'street', 'house', 'building'],
+  ['corpus', 'slash', 'letter', 'room'],
+  ['index', 'hotel'],
+  ['num-address-type']
+]
 const fieldsArray = Object.keys(fieldsObject).map(key => ({ 'key': key, ...fieldsObject[key] }))
 
-export { fieldsArray, fieldsObject}
+const nonEditable = ['id', 'check', 'quality-code', 'validation-code', 'original-address']
+const fieldsToEdit = fieldsArray.filter(field => !nonEditable.includes(field.key))
+
+const fieldsByGroup = fieldsGroup.reduce((acc, fieldGroup, index) => {
+  return {
+    ...acc,
+    [index]: [
+      ...fieldsToEdit.filter(({ key }) => fieldGroup.includes(key))
+    ]
+  }
+}, {})
+
+export { fieldsArray, fieldsObject, fieldsToEdit, fieldsByGroup }
 export default fieldsArray
