@@ -54,7 +54,7 @@ const bs = {
     const cnfBody = {
       data: entity
     }
-    return HTTP.put(backLink + '/' + entity + '/' + id + cnfBody)
+    return HTTP.put(backLink + '/update' + '/' + id, cnfBody)
       .then(resp => {
         if (resp !== 'error') {
           return Promise.resolve(resp)
@@ -94,7 +94,6 @@ const bs = {
         file.uploaded = percentCompleted
       }
     }
-
     let formData = new FormData()
     formData.append('files', file.data)
     return HTTP.post(backLink + apiExcel + '/clean/address', formData, config)
@@ -109,6 +108,20 @@ const bs = {
         file.error = true
         file.responseReceived = true
       })
+
+    // const fantom = setInterval(() => {
+    //   if (file.uploaded < 100)  {
+    //     file.uploaded += 10
+    //   } else {
+    //     file.responseReceived = true
+    //     clearInterval(fantom)
+    //   }
+    // }, 100)
+
+    // const delay = (ms) => {
+    //   return new Promise(resolve => setTimeout(resolve, ms))
+    // }
+    // return delay(1000).then(() => file.data)
   },
 
   // Скачать нормализованный эксель-файл в виде xlsx
