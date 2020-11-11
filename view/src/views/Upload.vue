@@ -25,7 +25,7 @@
           <b-spinner type="border" small v-if="loading"></b-spinner> Просмотр
         </template>
 
-        <tablePreview/>
+        <tablePreview :data="items"/>
 
       </b-tab>
 
@@ -44,6 +44,7 @@ export default {
         responseReceived: false,
         get showProgress () { return this.uploaded < 100 || !this.responseReceived }
       },
+      items: [],
       loading: false,
       tabIndex: 0
     }
@@ -51,10 +52,9 @@ export default {
   methods: {
     upload () {
       this.loading = true
-      console.log(this.fields)
       this.$bs.uploadFileAsync(this.file)
         .then(data => {
-          console.log(data)
+          this.items = data
           setTimeout(() => {
             this.loading = false
             this.tabIndex = 1

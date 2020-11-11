@@ -76,33 +76,18 @@ const SYSTEM_FIELDS = {
 }
 import { fieldsArray as FIELDS } from '@/data/fields'
 export default {
+  props: {
+    data: {
+      type: Array,
+      required: true
+    }
+  },
   data () {
     return {
       fields: FIELDS,
-      items: [
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', ...SYSTEM_FIELDS },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', ...SYSTEM_FIELDS },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', ...SYSTEM_FIELDS },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', ...SYSTEM_FIELDS },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', ...SYSTEM_FIELDS },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', ...SYSTEM_FIELDS },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', ...SYSTEM_FIELDS },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', ...SYSTEM_FIELDS },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', ...SYSTEM_FIELDS },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', ...SYSTEM_FIELDS },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', ...SYSTEM_FIELDS },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', ...SYSTEM_FIELDS },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', ...SYSTEM_FIELDS },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', ...SYSTEM_FIELDS },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', ...SYSTEM_FIELDS },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', ...SYSTEM_FIELDS },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', ...SYSTEM_FIELDS },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', ...SYSTEM_FIELDS },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', ...SYSTEM_FIELDS },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', ...SYSTEM_FIELDS }
-      ],
+      items: this.data.map(row => ({ ...row, ...SYSTEM_FIELDS })),
       total: 30,
-      totalErrors: 7
+      totalErrors: this.data.length
     }
   },
   methods: {

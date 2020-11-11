@@ -97,10 +97,10 @@ const bs = {
     let formData = new FormData()
     formData.append('files', file.data)
     return HTTP.post(backLink + apiExcel + '/clean/address', formData, config)
-      .then(resp => {
-        file.error = resp.error // условно
+      .then(({ data }) => {
+        file.error = !data // условно
         file.responseReceived = true
-        return resp
+        return data
       })
       .catch(e => {
         console.log(e)
