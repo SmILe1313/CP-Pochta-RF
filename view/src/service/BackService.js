@@ -126,7 +126,15 @@ const bs = {
 
   // Скачать нормализованный эксель-файл в виде xlsx/csv
   downloadCleanAddresses (type) {
-    return this.getExeclDataAsync(backLink + apiExcel + "/download/" + type)
+    return this.getExeclDataAsync(backLink + apiExcel + '/download/' + type)
+      .then(resp => {
+        const blob = new Blob([resp.data])
+        let link = document.createElement('a')
+        link.download = 'test.' + type
+        link.href = window.URL.createObjectURL(blob)
+        link.click()
+        link.remove()
+      })
   },
 
   // // Скачать нормализованный эксель-файл в виде csv
