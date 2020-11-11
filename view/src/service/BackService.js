@@ -124,15 +124,15 @@ const bs = {
     // return delay(1000).then(() => file.data)
   },
 
-  // Скачать нормализованный эксель-файл в виде xlsx
-  downloadCleanAddressesXLSX () {
-    return getExeclDataAsync(backLink + apiExcel + "/download/xlsx")
+  // Скачать нормализованный эксель-файл в виде xlsx/csv
+  downloadCleanAddresses (type) {
+    return this.getExeclDataAsync(backLink + apiExcel + "/download/" + type)
   },
 
-  // Скачать нормализованный эксель-файл в виде csv
-  downloadCleanAddressesCSV() {
-    return getExeclDataAsync(backLink + apiExcel + "/download/csv")
-  },
+  // // Скачать нормализованный эксель-файл в виде csv
+  // downloadCleanAddressesCSV() {
+  //   return getExeclDataAsync(backLink + apiExcel + "/download/csv")
+  // },
 
   // Получить из базы список нормализованных адресов
   getCleanAddresses () {

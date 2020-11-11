@@ -1,6 +1,6 @@
 <template>
 
-    <b-tabs v-model="tabIndex" content-class="mt-3">
+    <b-tabs v-model="tabIndex">
 
       <b-tab title="Загрузить">
         <b-container>
@@ -25,46 +25,7 @@
           <b-spinner type="border" small v-if="loading"></b-spinner> Просмотр
         </template>
 
-        <b-table
-          responsive
-          selectable
-          no-select-on-click
-          sticky-header="calc(100vh - 130px)"
-          striped
-          bordered
-          small
-          hover
-          head-variant="light"
-          @row-selected="onRowSelected"
-          :items="items"
-          :fields="fields">
-            
-            <!-- Выделенные строки оборачиваем в инпуты -->
-            <template v-slot:cell()="{ item, field, value, rowSelected }">
-              <template v-if="rowSelected">
-                <b-input size="sm" v-model="item[field.key]" @change="changeStatus(item)"/> 
-              </template>
-              <template v-else>
-                {{ value }}
-              </template>
-            </template>
-
-            <!-- Чекбоксы -->
-            <template #cell(check)="data">
-              <div class="tools">
-                <b-button @click="toggleRow(data)" variant="primary" size="sm">
-                  <b-icon-pencil-square/>
-                </b-button>
-
-                <b-button v-if="data.item._changed" @click="save(data.item)" variant="success" size="sm">
-                  <b-icon-hdd/>
-                </b-button>
-              </div>
-            </template>
-
-          </b-table>
-
-        </b-table>
+        <tablePreview/>
 
       </b-tab>
 
@@ -72,7 +33,7 @@
 </template>
 
 <script>
-import { fieldsArray as FIELDS } from '@/data/fields'
+import tablePreview from '@/components/tablePreview'
 export default {
   data () {
     return {
@@ -84,34 +45,7 @@ export default {
         get showProgress () { return this.uploaded < 100 || !this.responseReceived }
       },
       loading: false,
-      tabIndex: 0,
-      fields: FIELDS,
-      items: [
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', _changed: false, _rowVariant: '' },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', _changed: false, _rowVariant: '' },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', _changed: false, _rowVariant: '' },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', _changed: false, _rowVariant: '' },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', _changed: false, _rowVariant: '' },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', _changed: false, _rowVariant: '' },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', _changed: false, _rowVariant: '' },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', _changed: false, _rowVariant: '' },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', _changed: false, _rowVariant: '' },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', _changed: false, _rowVariant: '' },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', _changed: false, _rowVariant: '' },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', _changed: false, _rowVariant: '' },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', _changed: false, _rowVariant: '' },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', _changed: false, _rowVariant: '' },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', _changed: false, _rowVariant: '' },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', _changed: false, _rowVariant: '' },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', _changed: false, _rowVariant: '' },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', _changed: false, _rowVariant: '' },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', _changed: false, _rowVariant: '' },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', _changed: false, _rowVariant: '' },
-        { id: 40, 'address-type': 'Dickerson', area: 'Macdonald', _changed: false, _rowVariant: '' },
-        { id: 21, 'address-type': 'Larsen', area: 'Shaw', _changed: false, _rowVariant: '' },
-        { id: 89, 'address-type': 'Geneva', area: 'Wilson', _changed: false, _rowVariant: '' },
-        { id: 38, 'address-type': 'Jami', area: 'Carney', _changed: false, _rowVariant: '' }
-      ]
+      tabIndex: 0
     }
   },
   methods: {
@@ -126,32 +60,11 @@ export default {
             this.tabIndex = 1
           }, 1000)
         })
-    },
-    onRowSelected (row) {
-      console.log('Выделена строка:', row)
-    },
-    changeStatus (row) {
-      row._changed = true
-      row._rowVariant = 'warning'
-    },
-    toggleRow ({ rowSelected, selectRow, unselectRow }) {
-      if (rowSelected) {
-        unselectRow()
-      } else {
-        selectRow()
-      }
-    },
-    save (row) {
-      this.$bs.updateAsync(row, row.id)
     }
+  },
+  components: {
+    tablePreview
   }
 }
 </script>
 
-<style lang="stylus" scoped>
-.tools
-  display flex
-  flex-shrink 0
-  button
-    margin 2px
-</style>
