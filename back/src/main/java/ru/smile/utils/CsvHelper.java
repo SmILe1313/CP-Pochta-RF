@@ -10,7 +10,10 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -22,10 +25,10 @@ import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 
 public class CsvHelper {
-  public static String TYPE = "text/csv";
+  public static Set<String> TYPE = new HashSet<>(Arrays.asList("text/csv", "application/vnd.ms-excel"));
 
   public static boolean hasCSVFormat(MultipartFile file) {
-    return TYPE.equals(file.getContentType());
+    return TYPE.contains(file.getContentType());
   }
 
   public static List<ToCleanAddress> csvToCleanAddress(InputStream is) {
@@ -38,12 +41,12 @@ public class CsvHelper {
       Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
       for (CSVRecord csvRecord : csvRecords) {
-        ToCleanAddress tutorial = new ToCleanAddress(
+        ToCleanAddress toCleanAddress = new ToCleanAddress(
           Long.parseLong(csvRecord.get("Id")),
-          csvRecord.get("Адрес")
+          csvRecord.get("Address")
         );
 
-        toCleanAddresses.add(tutorial);
+        toCleanAddresses.add(toCleanAddress);
       }
 
       return toCleanAddresses;

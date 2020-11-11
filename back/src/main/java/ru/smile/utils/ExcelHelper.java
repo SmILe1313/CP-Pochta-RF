@@ -45,7 +45,7 @@ public class ExcelHelper {
     try {
       Workbook workbook = new XSSFWorkbook(is);
 
-      Sheet sheet = workbook.getSheetAt(1);
+      Sheet sheet = workbook.getSheetAt(0);
       Iterator<Row> rows = sheet.iterator();
 
       List<ToCleanAddress> toCleanAddresses = new ArrayList<ToCleanAddress>();

@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import bs from '@/service/BackService'
+// import bs from '@/service/BackService'
 export default {
   data () {
     return {
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     upload () {
-      bs.uploadFileAsync({
+      this.$bs.uploadFileAsync({
         uploaded: 0,
         error: false,
         responseReceived: false,

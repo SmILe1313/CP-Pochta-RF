@@ -20,6 +20,7 @@ import ru.smile.services.ExcelCsvService;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ExcelCsvController {
   ExcelCsvService excelService;
 
   @PostMapping("/clean/address")
-  public ResponseEntity<List<CleanAddress>> cleanFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<List<CleanAddress>> cleanFile(@RequestParam("files") MultipartFile file)  throws IOException {
     String message = "";
 
     // Если файл xlsx
