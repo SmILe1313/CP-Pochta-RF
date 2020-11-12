@@ -17,11 +17,11 @@ const apiExcel = '/excel'
 const bs = {
 
   // Получить entityName (тут просто название) по id
-  getDataAsync (entityName, id) {
-    return HTTP.get(backLink + '/' + entityName + '/' + id)
-      .then(resp => {
-        if (resp !== 'error') {
-          return Promise.resolve(resp)
+  getDataAsync (entityName) {
+    return HTTP.get(backLink + '/' + entityName)
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
         } else {
           return Promise.reject(new Error('getting error'))
         }
@@ -33,13 +33,10 @@ const bs = {
 
   // Создать объект entity (тут объект целиком)
   createAsync (entity) {
-    const cnfBody = {
-      data: entity
-    }
-    return HTTP.post(backLink + '/' + entity + cnfBody)
-      .then(resp => {
-        if (resp !== 'error') {
-          return Promise.resolve(resp)
+    return HTTP.post(backLink + '/', entity)
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
         } else {
           return Promise.reject(new Error('getting error'))
         }
@@ -51,13 +48,10 @@ const bs = {
 
   // Обновить entity (тут объект целиком) по id
   updateAsync (entity, id) {
-    const cnfBody = {
-      data: entity
-    }
-    return HTTP.put(backLink + '/update' + '/' + id, cnfBody)
-      .then(resp => {
-        if (resp !== 'error') {
-          return Promise.resolve(resp)
+    return HTTP.put(backLink + '/clean' + '/' + id, entity)
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
         } else {
           return Promise.reject(new Error('getting error'))
         }
@@ -69,13 +63,10 @@ const bs = {
 
   // Удалить entityName (тут просто название) по id
   deleteAsync (entityName, id) {
-    // let cnfBody = {
-    //   data: entity
-    // }
     return HTTP.delete(backLink + '/' + entityName + '/' + id)
-      .then(resp => {
-        if (resp !== 'error') {
-          return Promise.resolve(resp)
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
         } else {
           return Promise.reject(new Error('getting error'))
         }
@@ -128,7 +119,7 @@ const bs = {
   downloadCleanAddresses (type) {
     return this.getExeclDataAsync(backLink + apiExcel + '/download/' + type)
       .then(resp => {
-        const blob = new Blob([resp.data], { type:'application/vnd.ms-excel '})
+        const blob = new Blob([resp], { type:'application/vnd.ms-excel '})
         let link = document.createElement('a')
         let date = new Date()
         link.download = "Нормализованные адреса_" + date.getDate() + (date.getMonth() + 1) + date.getFullYear() + "." + type
@@ -143,14 +134,19 @@ const bs = {
   //   return getExeclDataAsync(backLink + apiExcel + "/download/csv")
   // },
 
-  // Получить из базы список нормализованных адресов
-  getCleanAddresses () {
-    return getExeclDataAsync(backLink + apiExcel + "/get/clean")
+  // Получить из базы список нормализованных адресов С ОШИБКАМИ
+  getCleanAddressesWithErrors () {
+    return this.getDataAsync("/clean/witherrors")
   },
 
-  // Получить из базы список НЕнормализованных адресов
+  // Получить из базы список нормализованных адресов
+  getCleanAddresses () {
+    return this.getDataAsync("/clean/all")
+  },
+
+  // Получить из базы список оригинальных адресов
   getToCleanAddresses () {
-    return getExeclDataAsync(backLink + apiExcel + "/get/toclean")
+    return this.getDataAsync("/toclean/all")
   },
 
   // Общий метод для экселя
@@ -158,9 +154,9 @@ const bs = {
     return HTTP.get(apiLink, {
       responseType: 'blob'
       })
-      .then(resp => {
-        if (resp !== 'error') {
-          return Promise.resolve(resp)
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
         } else {
           return Promise.reject(new Error('getting error'))
         }

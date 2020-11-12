@@ -74,7 +74,7 @@ public class ExcelCsvController {
     InputStreamResource file = new InputStreamResource(excelService.downloadFileXlsx());
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=lala.xlsx");// + filename
+    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
 
     return ResponseEntity.ok()
       .headers(headers)
@@ -92,36 +92,5 @@ public class ExcelCsvController {
       .contentType(MediaType.parseMediaType("application/csv"))
       .body(file);
   }
-
-  @GetMapping("/get/clean")
-  public ResponseEntity<List<CleanAddress>> getAllCleanAddresses() {
-    try {
-      List<CleanAddress> cleanAddresses = excelService.getAllCleanAddresses();
-
-      if (cleanAddresses.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-
-      return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  @GetMapping("/get/toclean")
-  public ResponseEntity<List<ToCleanAddress>> getAllToCleanAddresses() {
-    try {
-      List<ToCleanAddress> toCleanAddresses = excelService.getAllToCleanAddresses();
-
-      if (toCleanAddresses.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-
-      return new ResponseEntity<>(toCleanAddresses, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
 }
 

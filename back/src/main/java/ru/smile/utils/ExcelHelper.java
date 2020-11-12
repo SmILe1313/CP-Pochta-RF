@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
+import ru.smile.services.ExcelCsvService;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,13 +23,7 @@ import java.util.List;
 
 public class ExcelHelper {
   public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  static String[] HEADERs = { "Идентификатор записи", "Тип адреса", "Район", "Область, регион", "Населенный пункт",
-    "Микрорайон", "Часть адреса: Улица", "Часть адреса: Номер здания", "Часть здания: Строение", "Часть здания: Корпус",
-    "Часть здания: Дробь", "Часть здания: Литера", "Часть здания: Номер помещения", "Почтовый индекс",
-    "Название гостиницы",
-    "Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта",
-    "Код качества нормализации адреса", "Код проверки нормализации адреса",
-    "Оригинальные адрес одной строкой"};
+
   static String SHEET = "Нормализованные адреса";
 
 //  { "Идентификатор записи", "Тип адреса", "Район", "Часть здания: Строение", "Часть здания: Корпус",
@@ -36,8 +31,6 @@ public class ExcelHelper {
 //    "Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта", "Оригинальные адрес одной строкой",
 //    "Населенный пункт", "Код качества нормализации адреса", "Область, регион", "Часть здания: Номер помещения",
 //    "Часть здания: Дробь", "Часть адреса: Улица", "Код проверки нормализации адреса"};
-
-  static Long user_id = 1L;
 
 
   public static boolean hasExcelFormat(MultipartFile file) {
@@ -84,7 +77,7 @@ public class ExcelHelper {
               break;
           }
 
-          toCleanAddress.setUserId(user_id);
+          toCleanAddress.setUserId(ExcelCsvService.userId);
 
           cellIdx++;
         }
@@ -115,9 +108,9 @@ public class ExcelHelper {
       // Header
       Row headerRow = sheet.createRow(0);
 
-      for (int col = 0; col < HEADERs.length; col++) {
+      for (int col = 0; col < ExcelCsvService.HEADERs.length; col++) {
         Cell cell = headerRow.createCell(col);
-        cell.setCellValue(HEADERs[col]);
+        cell.setCellValue(ExcelCsvService.HEADERs[col]);
         cell.setCellStyle(headerCellStyle);
       }
 

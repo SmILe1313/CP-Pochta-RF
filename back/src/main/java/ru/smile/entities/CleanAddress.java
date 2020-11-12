@@ -1,6 +1,7 @@
 package ru.smile.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Id;
@@ -36,6 +37,7 @@ import java.util.Set;
  *  */
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "clean_address")
 public class CleanAddress {
 
@@ -268,20 +270,21 @@ public class CleanAddress {
     this.validationCode = validationCode;
   }
 
-  public Boolean isGoodQuality () {
-    return goodQuality.contains(this.qualityCode);
-  }
-
-  public Boolean isValidationQuality () {
-    return goodValidation.contains(this.validationCode);
-  }
-
   public Long getUserId() {
     return userId;
   }
 
   public void setUserId(Long userId) {
     this.userId = userId;
+  }
+
+  @JsonIgnore
+  public Boolean isGoodQuality () {
+    return goodQuality.contains(this.qualityCode);
+  }
+  @JsonIgnore
+  public Boolean isValidationQuality () {
+    return goodValidation.contains(this.validationCode);
   }
 
 }

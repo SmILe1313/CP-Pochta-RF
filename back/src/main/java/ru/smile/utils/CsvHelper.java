@@ -6,11 +6,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +23,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
+import ru.smile.services.ExcelCsvService;
 
 public class CsvHelper {
   public static Set<String> TYPE = new HashSet<>(Arrays.asList("text/csv", "application/vnd.ms-excel"));
@@ -32,9 +33,10 @@ public class CsvHelper {
   }
 
   public static List<ToCleanAddress> csvToCleanAddress(InputStream is) {
+    final CSVFormat format = CSVFormat.EXCEL.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim();//.withDelimiter(';');
+
     try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-         CSVParser csvParser = new CSVParser(fileReader,
-           CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+         CSVParser csvParser = new CSVParser(fileReader,format);) {
 
       List<ToCleanAddress> toCleanAddresses = new ArrayList<ToCleanAddress>();
 
@@ -46,6 +48,7 @@ public class CsvHelper {
           csvRecord.get("Address")
         );
 
+        toCleanAddress.setUserId(ExcelCsvService.userId);
         toCleanAddresses.add(toCleanAddress);
       }
 
@@ -56,10 +59,13 @@ public class CsvHelper {
   }
 
   public static ByteArrayInputStream cleanAddressToCSV(List<CleanAddress> cleanAddresses) {
-    final CSVFormat format = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL);
+    final CSVFormat format = CSVFormat.EXCEL.withQuoteMode(QuoteMode.MINIMAL).withFirstRecordAsHeader();
 
     try (ByteArrayOutputStream out = new ByteArrayOutputStream();
-         CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);) {
+         CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8)), format);) {
+
+      csvPrinter.printRecord((Object) ExcelCsvService.HEADERs);
+
       for (CleanAddress cleanAddress : cleanAddresses) {
         List<String> data = Arrays.asList(
           String.valueOf(cleanAddress.getId()), // Идентификатор записи

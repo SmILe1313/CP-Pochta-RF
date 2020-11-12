@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smile.entities.CleanAddress;
+import ru.smile.entities.ToCleanAddress;
 import ru.smile.repositories.CleanAddressRepository;
+import ru.smile.repositories.ToCleanAddressRepository;
 
 import java.util.List;
 
@@ -13,16 +15,16 @@ import static ru.smile.entities.CleanAddress.goodValidation;
 
 @Service
 @Transactional
-public class CleanAddresService {
+public class ToCleanAddresService {
 
   @Autowired
-  CleanAddressRepository repo;
+  ToCleanAddressRepository repo;
 
-  public CleanAddress create(CleanAddress entity) {
+  public ToCleanAddress create(ToCleanAddress entity) {
     return repo.save(entity);
   }
 
-  public boolean update(CleanAddress entity, Long id) {
+  public boolean update(ToCleanAddress entity, Long id) {
     if (repo.existsById(id)) {
       entity.setId(id);
       repo.save(entity);
@@ -36,16 +38,11 @@ public class CleanAddresService {
     repo.deleteById(id);
   }
 
-  public List<CleanAddress> getAll() {
-    return (List<CleanAddress>) repo.findAll();
+  public List<ToCleanAddress> getAll() {
+    return (List<ToCleanAddress>) repo.findAll();
   }
 
-  // Нормализицая с ошибками
-  public List<CleanAddress> getWithErrors() {
-    return (List<CleanAddress>) repo.findByQualityCodeNotInOrValidationCodeNotIn(goodQuality, goodValidation);
-  }
-
-  public CleanAddress get(Long id) {
+  public ToCleanAddress get(Long id) {
     return repo.findById(id).get();
   }
 
