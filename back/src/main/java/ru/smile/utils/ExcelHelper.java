@@ -1,6 +1,9 @@
 package ru.smile.utils;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -102,12 +105,20 @@ public class ExcelHelper {
     try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
       Sheet sheet = workbook.createSheet(SHEET);
 
+      Font headerFont = workbook.createFont();
+      headerFont.setBold(true);
+      headerFont.setColor(IndexedColors.BLUE.getIndex());
+
+      CellStyle headerCellStyle = workbook.createCellStyle();
+      headerCellStyle.setFont(headerFont);
+
       // Header
       Row headerRow = sheet.createRow(0);
 
       for (int col = 0; col < HEADERs.length; col++) {
         Cell cell = headerRow.createCell(col);
         cell.setCellValue(HEADERs[col]);
+        cell.setCellStyle(headerCellStyle);
       }
 
       int rowIdx = 1;
@@ -136,6 +147,7 @@ public class ExcelHelper {
       }
 
       workbook.write(out);
+      workbook.close();
       return new ByteArrayInputStream(out.toByteArray());
     } catch (IOException e) {
       throw new RuntimeException("Ошибка импорта в эксель: " + e.getMessage());

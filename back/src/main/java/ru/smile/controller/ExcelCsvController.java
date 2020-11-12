@@ -69,12 +69,15 @@ public class ExcelCsvController {
   }
 
   @GetMapping("/download/xlsx")
-  public ResponseEntity<Resource> getFileXlsx() {
-    String filename = "Нормализованные адреса.xlsx";
+  public ResponseEntity<InputStreamResource> getFileXlsx() {
+    String filename = "The_normalized_addresses.xlsx";
     InputStreamResource file = new InputStreamResource(excelService.downloadFileXlsx());
 
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=lala.xlsx");// + filename
+
     return ResponseEntity.ok()
-      .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+      .headers(headers)
       .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
       .body(file);
   }

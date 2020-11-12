@@ -9,6 +9,7 @@ ru\smile\repositories\CleanAddressRepository.class
 ru\smile\config\WebAppInitializer.class
 ru\smile\services\UserService.class
 ru\smile\message\ResponseMessage.class
+ru\smile\utils\CsvHelper.class
 ru\smile\config\WebMvcConfig.class
 ru\smile\utils\ExcelHelper.class
 ru\smile\config\JpaConfig.class
@@ -16,6 +17,6 @@ ru\smile\controller\ApiController.class
 ru\smile\controller\HomeController.class
 ru\smile\entities\ToCleanAddress.class
 ru\smile\repositories\ToCleanAddressRepository.class
+ru\smile\services\ExcelCsvService.class
 ru\smile\services\TestService.class
-ru\smile\services\ExcelService.class
 ru\smile\controller\CrudController.class

@@ -128,9 +128,10 @@ const bs = {
   downloadCleanAddresses (type) {
     return this.getExeclDataAsync(backLink + apiExcel + '/download/' + type)
       .then(resp => {
-        const blob = new Blob([resp.data])
+        const blob = new Blob([resp.data], { type:'application/vnd.ms-excel '})
         let link = document.createElement('a')
-        link.download = 'test.' + type
+        let date = new Date()
+        link.download = "Нормализованные адреса_" + date.getDate() + (date.getMonth() + 1) + date.getFullYear() + "." + type
         link.href = window.URL.createObjectURL(blob)
         link.click()
         link.remove()
@@ -154,7 +155,9 @@ const bs = {
 
   // Общий метод для экселя
   getExeclDataAsync (apiLink) {
-    return HTTP.get(apiLink)
+    return HTTP.get(apiLink, {
+      responseType: 'blob'
+      })
       .then(resp => {
         if (resp !== 'error') {
           return Promise.resolve(resp)

@@ -6,13 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
-import ru.smile.repositories.CleanAddressRepository;
 import ru.smile.repositories.ToCleanAddressRepository;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,7 +21,8 @@ public class ExcelCsvService {
 
   @Autowired ToCleanAddressRepository toCleanAddressRepository;
 
-  @Autowired CleanAddressRepository cleanAddressRepository;
+  @Autowired
+  CleanAddresService cleanAddresessService;
 
   @Autowired OtpravkaService otpravkaService;
 
@@ -29,8 +30,9 @@ public class ExcelCsvService {
     try {
       List<ToCleanAddress> toCleanAddresses = ExcelHelper.excelToCleanAddress(file.getInputStream());
       toCleanAddressRepository.saveAll(toCleanAddresses);
-      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
-      cleanAddressRepository.saveAll(cleanAddresses);
+//      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
+//      cleanAddressRepository.saveAll(cleanAddresses);
+      List<CleanAddress> cleanAddresses = cleanAddresessService.getNotCleaned();
       return cleanAddresses;
     } catch (IOException e) {
       throw new RuntimeException("Ошибка чтения xlsx-файла: " + e.getMessage());
@@ -41,8 +43,9 @@ public class ExcelCsvService {
     try {
       List<ToCleanAddress> toCleanAddresses = CsvHelper.csvToCleanAddress(file.getInputStream());
       toCleanAddressRepository.saveAll(toCleanAddresses);
-      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
-      cleanAddressRepository.saveAll(cleanAddresses);
+      List<CleanAddress> cleanAddresses = new ArrayList<>();
+//      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
+//      cleanAddressRepository.saveAll(cleanAddresses);
       return cleanAddresses;
     } catch (IOException e) {
       throw new RuntimeException("Ошибка чтения csv-файла: " + e.getMessage());
@@ -50,14 +53,14 @@ public class ExcelCsvService {
   }
 
   public ByteArrayInputStream downloadFileXlsx() {
-    List<CleanAddress> cleanAddresses = cleanAddressRepository.findAll();
+    List<CleanAddress> cleanAddresses = cleanAddresessService.getAll();
 
     ByteArrayInputStream in = ExcelHelper.cleanAddressToExcel(cleanAddresses);
     return in;
   }
 
   public ByteArrayInputStream downloadFileCsv() {
-    List<CleanAddress> cleanAddresses = cleanAddressRepository.findAll();
+    List<CleanAddress> cleanAddresses = cleanAddresessService.getAll();
 
     ByteArrayInputStream in = CsvHelper.cleanAddressToCSV(cleanAddresses);
     return in;
@@ -68,7 +71,7 @@ public class ExcelCsvService {
   }
 
   public List<CleanAddress> getAllCleanAddresses() {
-    return cleanAddressRepository.findAll();
+    return cleanAddresessService.getAll();
   }
 }
 

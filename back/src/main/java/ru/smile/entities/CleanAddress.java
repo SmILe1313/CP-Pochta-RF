@@ -39,7 +39,9 @@ import java.util.Set;
 @Table(name = "clean_address")
 public class CleanAddress {
 
+  @JsonIgnore
   public final static Set<String> goodQuality = new HashSet<>(Arrays.asList("GOOD", "POSTAL_BOX", "ON_DEMAND", "UNDEF_05"));
+  @JsonIgnore
   public final static Set<String> goodValidation = new HashSet<>(Arrays.asList("VALIDATED", "OVERRIDDEN", "CONFIRMED_MANUALLY"));
 
   @JsonIgnore
@@ -70,13 +72,7 @@ public class CleanAddress {
   @JsonProperty("num-address-type")
   private String numAddressType;
 
-  @JsonProperty("original-address")
-  private String originalAddress;
-
   private String place;
-
-  @JsonProperty("quality-code")
-  private String qualityCode;
 
   private String region;
 
@@ -85,6 +81,12 @@ public class CleanAddress {
   private String slash;
 
   private String street;
+
+  @JsonProperty("original-address")
+  private String originalAddress;
+
+  @JsonProperty("quality-code")
+  private String qualityCode;
 
   @JsonProperty("validation-code")
   private String validationCode;

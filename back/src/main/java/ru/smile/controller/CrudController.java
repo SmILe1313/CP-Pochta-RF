@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.smile.entities.CleanAddress;
 import ru.smile.entities.User;
+import ru.smile.services.CleanAddresService;
 import ru.smile.services.UserService;
 
 @CrossOrigin
@@ -19,6 +21,8 @@ import ru.smile.services.UserService;
 public class CrudController {
 
   @Autowired private UserService userService;
+
+  @Autowired private CleanAddresService cleanAddresService;
 
   @GetMapping("/user/{id}") // get/
   public ResponseEntity<User> getUser(@PathVariable Long id){
@@ -46,6 +50,12 @@ public class CrudController {
   public ResponseEntity<String> deleteBook(@PathVariable(value = "id") Long id) {
     userService.delete(id);
     return new ResponseEntity<String>("Deleted", HttpStatus.OK);
+  }
+
+  @PutMapping("update/{id}") //update/
+  public ResponseEntity<CleanAddress> updateUser(@PathVariable(value = "id") Long id, @RequestBody CleanAddress cleanAddress){
+    cleanAddresService.update(cleanAddress, id);
+    return new ResponseEntity<CleanAddress>(cleanAddress, HttpStatus.OK);
   }
 
 }
