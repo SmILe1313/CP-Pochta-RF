@@ -6,5 +6,5 @@ import ru.smile.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
+  User findByLoginAndPassword(String login, String password);
 }

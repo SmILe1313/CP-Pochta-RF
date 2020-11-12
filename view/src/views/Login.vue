@@ -28,7 +28,7 @@
 				<logoEsia class="logo-esia"/>
 			</div>
 		</b-form>
-		
+
 	</div>
 </template>
 
@@ -50,8 +50,14 @@ export default {
 		onSubmit (e) {
 			e.preventDefault()
 			console.log(this.form)
-			this.$set(this, '$loggedIn', true)
-			this.$router.push('/')
+			this.$bs.doLogin(this.form.login, this.form.password)
+				.then(data => {
+					console.log(data)
+					if (data) {
+						// this.$set(this, '$loggedIn', true)
+						// this.$router.push('/upload')
+					}
+				})
 		}
 	},
 	components: {

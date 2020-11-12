@@ -20,12 +20,15 @@ public class ExcelCsvService {
 
   @Autowired ToCleanAddressRepository toCleanAddressRepository;
 
-  @Autowired
-  CleanAddresService cleanAddresessService;
+  @Autowired CleanAddresService cleanAddresessService;
 
   @Autowired OtpravkaService otpravkaService;
 
-  public static Long userId = 1L;
+  @Autowired ExcelHelper excelHelper;
+
+  @Autowired CsvHelper csvHelper;
+
+  @Autowired UserService userService;
 
   public static String[] HEADERs = { "Идентификатор записи", "Тип адреса", "Район", "Область, регион", "Населенный пункт",
     "Микрорайон", "Часть адреса: Улица", "Часть адреса: Номер здания", "Часть здания: Строение", "Часть здания: Корпус",
@@ -37,7 +40,7 @@ public class ExcelCsvService {
 
   public List<CleanAddress> saveAndNormalizeXlsx(MultipartFile file) {
     try {
-      List<ToCleanAddress> toCleanAddresses = ExcelHelper.excelToCleanAddress(file.getInputStream());
+      List<ToCleanAddress> toCleanAddresses = excelHelper.excelToCleanAddress(file.getInputStream(), userService);
       toCleanAddressRepository.saveAll(toCleanAddresses);
 //      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
 //      cleanAddressRepository.saveAll(cleanAddresses);
@@ -50,7 +53,7 @@ public class ExcelCsvService {
 
   public List<CleanAddress> saveAndNormalizeCsv(MultipartFile file) {
     try {
-      List<ToCleanAddress> toCleanAddresses = CsvHelper.csvToCleanAddress(file.getInputStream());
+      List<ToCleanAddress> toCleanAddresses = csvHelper.csvToCleanAddress(file.getInputStream(), userService);
       toCleanAddressRepository.saveAll(toCleanAddresses);
 //      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
 //      cleanAddressRepository.saveAll(cleanAddresses);
@@ -61,15 +64,17 @@ public class ExcelCsvService {
     }
   }
 
+  // Скачать XLSX
   public ByteArrayInputStream downloadFileXlsx() {
-    List<CleanAddress> cleanAddresses = cleanAddresessService.getAll();
+    List<CleanAddress> cleanAddresses = cleanAddresessService.getWithoutErrors();
 
     ByteArrayInputStream in = ExcelHelper.cleanAddressToExcel(cleanAddresses);
     return in;
   }
 
+  // Скачать CSV
   public ByteArrayInputStream downloadFileCsv() {
-    List<CleanAddress> cleanAddresses = cleanAddresessService.getAll();
+    List<CleanAddress> cleanAddresses = cleanAddresessService.getWithoutErrors();
 
     ByteArrayInputStream in = CsvHelper.cleanAddressToCSV(cleanAddresses);
     return in;

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
-import ru.smile.entities.ToCleanAddress;
 import ru.smile.services.ExcelCsvService;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
@@ -29,8 +28,7 @@ import java.util.List;
 @RequestMapping("/excel")
 public class ExcelCsvController {
 
-  @Autowired
-  ExcelCsvService excelService;
+  @Autowired ExcelCsvService excelCsvService;
 
   @PostMapping("/clean/address")
   public ResponseEntity<List<CleanAddress>> cleanFile(@RequestParam("files") MultipartFile file)  throws IOException {
@@ -39,7 +37,7 @@ public class ExcelCsvController {
     // Если файл xlsx
     if (ExcelHelper.hasExcelFormat(file)) {
       try {
-        List<CleanAddress> cleanAddresses = excelService.saveAndNormalizeXlsx(file);
+        List<CleanAddress> cleanAddresses = excelCsvService.saveAndNormalizeXlsx(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
         return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
@@ -54,7 +52,7 @@ public class ExcelCsvController {
     // Если файл csv
     if (CsvHelper.hasCSVFormat(file)) {
       try {
-        List<CleanAddress> cleanAddresses = excelService.saveAndNormalizeCsv(file);
+        List<CleanAddress> cleanAddresses = excelCsvService.saveAndNormalizeCsv(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
         return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
@@ -71,7 +69,7 @@ public class ExcelCsvController {
   @GetMapping("/download/xlsx")
   public ResponseEntity<InputStreamResource> getFileXlsx() {
     String filename = "The_normalized_addresses.xlsx";
-    InputStreamResource file = new InputStreamResource(excelService.downloadFileXlsx());
+    InputStreamResource file = new InputStreamResource(excelCsvService.downloadFileXlsx());
 
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
@@ -85,7 +83,7 @@ public class ExcelCsvController {
   @GetMapping("/download/csv")
   public ResponseEntity<Resource> getFileCsv() {
     String filename = "Нормализованные адреса.csv";
-    InputStreamResource file = new InputStreamResource(excelService.downloadFileCsv());
+    InputStreamResource file = new InputStreamResource(excelCsvService.downloadFileCsv());
 
     return ResponseEntity.ok()
       .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)

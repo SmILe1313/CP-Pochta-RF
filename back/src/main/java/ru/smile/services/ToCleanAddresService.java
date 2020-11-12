@@ -17,8 +17,7 @@ import static ru.smile.entities.CleanAddress.goodValidation;
 @Transactional
 public class ToCleanAddresService {
 
-  @Autowired
-  ToCleanAddressRepository repo;
+  @Autowired ToCleanAddressRepository repo;
 
   public ToCleanAddress create(ToCleanAddress entity) {
     return repo.save(entity);

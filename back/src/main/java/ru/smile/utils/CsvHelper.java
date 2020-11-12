@@ -20,19 +20,26 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.QuoteMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 import ru.smile.services.ExcelCsvService;
+import ru.smile.services.UserService;
 
+@Component
 public class CsvHelper {
+
+//  @Autowired UserService userService;
+
   public static Set<String> TYPE = new HashSet<>(Arrays.asList("text/csv", "application/vnd.ms-excel"));
 
   public static boolean hasCSVFormat(MultipartFile file) {
     return TYPE.contains(file.getContentType());
   }
 
-  public static List<ToCleanAddress> csvToCleanAddress(InputStream is) {
+  public List<ToCleanAddress> csvToCleanAddress(InputStream is, UserService userService) {
     final CSVFormat format = CSVFormat.EXCEL.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim();//.withDelimiter(';');
 
     try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
@@ -48,7 +55,7 @@ public class CsvHelper {
           csvRecord.get("Address")
         );
 
-        toCleanAddress.setUserId(ExcelCsvService.userId);
+        toCleanAddress.setUserId(userService.getUserId());
         toCleanAddresses.add(toCleanAddress);
       }
 

@@ -182,6 +182,24 @@ const bs = {
       })
   },
 
+  // Логинимся. В ответ придет user
+  doLogin(log, pass) {
+    let body = {
+      login: log, password: pass
+    }
+    return HTTP.post(backLink + apiController + '/login', body)
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
+        } else {
+          return Promise.reject(new Error('getting error'))
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  },
+
   // Просто тестовый метод, который отправляет запрос на бэк, а тот отправляет на сторонний сервис
   getTest () {
     return HTTP.get(backLink + '/testGetService')

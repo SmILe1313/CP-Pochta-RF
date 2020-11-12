@@ -60,7 +60,7 @@ public class CrudController {
   }
 
   @PutMapping("/clean/{id}") //update/
-  public ResponseEntity<CleanAddress> updateUser(@PathVariable(value = "id") Long id, @Valid @RequestBody CleanAddress cleanAddress){
+  public ResponseEntity<CleanAddress> updateClean(@PathVariable(value = "id") Long id, @Valid @RequestBody CleanAddress cleanAddress){
     cleanAddresService.update(cleanAddress, id);
     return new ResponseEntity<CleanAddress>(cleanAddress, HttpStatus.OK);
   }

@@ -8,10 +8,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 import ru.smile.services.ExcelCsvService;
+import ru.smile.services.UserService;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +24,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@Component
 public class ExcelHelper {
+
+//  @Autowired UserService userService;
+
   public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
   static String SHEET = "Нормализованные адреса";
@@ -37,7 +44,7 @@ public class ExcelHelper {
     return TYPE.equals(file.getContentType());
   }
 
-  public static List<ToCleanAddress> excelToCleanAddress(InputStream is) {
+  public List<ToCleanAddress> excelToCleanAddress(InputStream is, UserService userService) {
     try {
       Workbook workbook = new XSSFWorkbook(is);
 
@@ -77,7 +84,7 @@ public class ExcelHelper {
               break;
           }
 
-          toCleanAddress.setUserId(ExcelCsvService.userId);
+          toCleanAddress.setUserId(userService.getUserId());
 
           cellIdx++;
         }

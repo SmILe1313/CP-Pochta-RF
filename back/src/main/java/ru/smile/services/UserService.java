@@ -14,6 +14,8 @@ public class UserService {
 
   @Autowired UserRepository repo;
 
+  private User user;
+
   public User create(User entity) {
     return repo.save(entity);
   }
@@ -40,4 +42,23 @@ public class UserService {
     return repo.findById(id).get();
   }
 
+  public User getUser() {
+    return user;
+  }
+
+  public Long getUserId() {
+    return user != null ? user.getId() : 0L;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public String getUserName() {
+    return user.getFirstName() + ' ' + user.getLastName();
+  }
+
+  public User getUserByLogAndPass(String login, String password) {
+    return repo.findByLoginAndPassword(login, password);
+  }
 }

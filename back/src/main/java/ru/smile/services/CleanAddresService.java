@@ -15,8 +15,7 @@ import static ru.smile.entities.CleanAddress.goodValidation;
 @Transactional
 public class CleanAddresService {
 
-  @Autowired
-  CleanAddressRepository repo;
+  @Autowired CleanAddressRepository repo;
 
   public CleanAddress create(CleanAddress entity) {
     return repo.save(entity);
@@ -43,6 +42,11 @@ public class CleanAddresService {
   // Нормализицая с ошибками
   public List<CleanAddress> getWithErrors() {
     return (List<CleanAddress>) repo.findByQualityCodeNotInOrValidationCodeNotIn(goodQuality, goodValidation);
+  }
+
+  // Нормализицая без ошибок
+  public List<CleanAddress> getWithoutErrors() {
+    return (List<CleanAddress>) repo.findByQualityCodeInAndValidationCodeIn(goodQuality, goodValidation);
   }
 
   public CleanAddress get(Long id) {

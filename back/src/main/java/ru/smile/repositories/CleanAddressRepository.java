@@ -10,5 +10,9 @@ import java.util.Set;
 
 @Repository
 public interface CleanAddressRepository extends JpaRepository<CleanAddress, Long> {
+  // Ошибки
   List<CleanAddress> findByQualityCodeNotInOrValidationCodeNotIn(Set<String> qualityCode, Set<String> validationCode);
+
+  // Без ошибок
+  List<CleanAddress> findByQualityCodeInAndValidationCodeIn(Set<String> qualityCode, Set<String> validationCode);
 }
