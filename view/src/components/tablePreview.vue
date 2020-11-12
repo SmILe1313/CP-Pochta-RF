@@ -19,7 +19,7 @@
           <!-- Выделенные строки оборачиваем в инпуты -->
           <template v-slot:cell()="{ item, field, value, rowSelected }">
             <template v-if="rowSelected">
-              <b-input size="sm" v-model="item[field.key]" @input="changeStatus(item)"/> 
+              <b-input size="sm" v-model="item[field.key]" @input="changeStatus(item)" :disabled="field.disabled"/> 
             </template>
             <template v-else>{{ value }}</template>
           </template>

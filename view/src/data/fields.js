@@ -5,7 +5,8 @@ const fieldsObject = {
   },
   id: {
     label: 'ID',
-    type: 'number'
+    type: 'number',
+    disabled: true
   },
   'address-type': {
     label: 'Тип адреса',
