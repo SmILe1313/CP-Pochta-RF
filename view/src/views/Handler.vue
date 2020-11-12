@@ -77,6 +77,14 @@ export default {
     getAll () {
       return this.$bs.getCleanAddresses()
         .then(data => { this.addressesAll = data })
+    },
+
+    getByString () {
+      let strings = ["maskvaaaaa", "piteeeer", "ebuuurg"]
+      this.$bs.getNormalizeByString(strings)
+        .then(data => {
+          console.log(data)
+        })
     }
   },
   components: {
