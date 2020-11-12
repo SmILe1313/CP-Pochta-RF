@@ -11,7 +11,7 @@ const HTTP = axios.create({
   timeout: 150000
 })
 
-const backLink = 'http://192.169.6.10:9000'
+const backLink = 'http://192.169.6.14:9000'
 const apiExcel = '/excel'
 const apiController = '/api'
 

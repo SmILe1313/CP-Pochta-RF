@@ -53,7 +53,7 @@
       </b-form>
     </b-card>
     </b-overlay>
-    <b-card v-else title="Нет записей для исправления">
+    <b-card v-else title="Нет записей для исправления" class="mt-5">
       <b-card-text> Все записи имеют корректный адрес.</b-card-text>
 
       <b-card-text>Вы можете выгрузить обработанные адреса</b-card-text>

@@ -3,21 +3,26 @@
     <b-tabs v-model="tabIndex">
 
       <b-tab title="Загрузка">
-        <b-container>
-
+        <b-container class="mt-5 mb-5">
+        <b-card title="Загрузка файла">
+          <b-card-text>Загрузите подготовленный файл для обработки в формате .xlsx или .csv.</b-card-text>
           <b-form-file
             v-show="!loading"
             v-model="file.data"
             :state="Boolean(file.data)"
             placeholder="Выберите или перетащите файл..."
             drop-placeholder="Перетащите сюда..."
+            class="mt-4 mb-4"
             size="lg"
           ></b-form-file>
           <b-progress height="48px" :value="file.uploaded" :max="100" show-progress animated v-show="loading"></b-progress>
 
-          <div class="mt-3">Выбранный файл: {{ file.data ? file.data.name : '' }}</div>
-          <b-button @click="upload" :disabled="!file.data" class="mr-2">Загрузить</b-button>
+          <b-row align-v="center" align-h="between" class="p-3" >
+            <b-button @click="upload" :disabled="!file.data" variant="primary" size="lg">Начать обработку</b-button>
+            <b-link href="#/" class="card-link">Как это работает?</b-link>
+          </b-row>
 
+        </b-card>
         </b-container>
       </b-tab>
 

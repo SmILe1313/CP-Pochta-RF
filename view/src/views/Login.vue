@@ -51,7 +51,7 @@ export default {
 			e.preventDefault()
 			console.log(this.form)
 			this.$set(this, '$loggedIn', true)
-			this.$router.push('/upload')
+			this.$router.push('/')
 		}
 	},
 	components: {
