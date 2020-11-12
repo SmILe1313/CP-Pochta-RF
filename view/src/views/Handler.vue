@@ -22,6 +22,8 @@
 
           <b-button @click="getAll" class="mr-2">Все</b-button>
 
+          <b-button @click="getByString" class="mr-2">Получить по еб.. т.е. по строке</b-button>
+
         </b-container>
       </b-tab>
 
@@ -91,6 +93,14 @@ export default {
             this.loading = false
             this.tabIndex = 1
           }, 1000)
+        })
+    },
+
+    getByString () {
+      let strings = ["maskvaaaaa", "piteeeer", "ebuuurg"]
+      this.$bs.getNormalizeByString(strings)
+        .then(data => {
+          console.log(data)
         })
     }
   },

@@ -13,6 +13,7 @@ const HTTP = axios.create({
 
 const backLink = 'http://192.169.6.6:9000'
 const apiExcel = '/excel'
+const apiController = '/api'
 
 const bs = {
 
@@ -154,6 +155,21 @@ const bs = {
     return HTTP.get(apiLink, {
       responseType: 'blob'
       })
+      .then(({ data }) => {
+        if (data) {
+          return Promise.resolve(data)
+        } else {
+          return Promise.reject(new Error('getting error'))
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  },
+
+  // Получить нормализованный адрес по пулу строк
+  getNormalizeByString (entity) {
+    return HTTP.post(backLink + apiController + '/normalizeByString', entity)
       .then(({ data }) => {
         if (data) {
           return Promise.resolve(data)
