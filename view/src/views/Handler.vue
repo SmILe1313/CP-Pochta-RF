@@ -18,22 +18,18 @@
           <div class="mt-3">Выбранный файл: {{ file.data ? file.data.name : '' }}</div>
           <b-button @click="upload" :disabled="!file.data" class="mr-2">Загрузить</b-button>
 
-          <b-button @click="withErrors" class="mr-2">С ошибками</b-button>
-
-          <b-button @click="getAll" class="mr-2">Все</b-button>
-
         </b-container>
       </b-tab>
 
-      <b-tab title="Просмотр" lazy :disabled="!items.length">
+      <b-tab title="Просмотр" lazy :disabled="!addressesAll.length">
         <template #title>
           <b-spinner type="border" small v-if="loading"></b-spinner> Просмотр
         </template>
-        <tablePreview :data="items"/>
+        <tablePreview :data="addressesAll"/>
       </b-tab>
 
-      <b-tab title="Исправление" content-class="mt-3" :disabled="!items.length">
-        <editCard :data="items"/>
+      <b-tab title="Исправление" content-class="mt-3" :disabled="!addressesWithError.length">
+        <editCard :data="addressesWithError"/>
       </b-tab>
 
     </b-tabs>
@@ -52,17 +48,20 @@ export default {
         responseReceived: false,
         get showProgress () { return this.uploaded < 100 || !this.responseReceived }
       },
-      items: [],
+      addressesAll: [],
+      addressesWithError: [],
       loading: false,
       tabIndex: 0
     }
   },
   methods: {
+    
     upload () {
       this.loading = true
       this.$bs.uploadFileAsync(this.file)
-        .then(data => {
-          this.items = data
+        .then(() => this.getWithErrors())
+        .then(() => this.getAll())
+        .then(() => {
           setTimeout(() => {
             this.loading = false
             this.tabIndex = 1
@@ -70,28 +69,14 @@ export default {
         })
     },
 
-    withErrors () {
-      this.loading = true
-      this.$bs.getCleanAddressesWithErrors()
-        .then(data => {
-          this.items = data
-          setTimeout(() => {
-            this.loading = false
-            this.tabIndex = 1
-          }, 1000)
-        })
+    getWithErrors () {
+      return this.$bs.getCleanAddressesWithErrors()
+        .then(data => { this.addressesWithError = data})
     },
 
     getAll () {
-      this.loading = true
-      this.$bs.getCleanAddresses()
-        .then(data => {
-          this.items = data
-          setTimeout(() => {
-            this.loading = false
-            this.tabIndex = 1
-          }, 1000)
-        })
+      return this.$bs.getCleanAddresses()
+        .then(data => { this.addressesAll = data })
     }
   },
   components: {

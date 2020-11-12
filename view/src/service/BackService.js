@@ -11,7 +11,7 @@ const HTTP = axios.create({
   timeout: 150000
 })
 
-const backLink = 'http://192.169.6.6:9000'
+const backLink = 'http://192.169.6.10:9000'
 const apiExcel = '/excel'
 
 const bs = {
@@ -136,17 +136,17 @@ const bs = {
 
   // Получить из базы список нормализованных адресов С ОШИБКАМИ
   getCleanAddressesWithErrors () {
-    return this.getDataAsync("/clean/witherrors")
+    return this.getDataAsync("clean/witherrors")
   },
 
   // Получить из базы список нормализованных адресов
   getCleanAddresses () {
-    return this.getDataAsync("/clean/all")
+    return this.getDataAsync("clean/all")
   },
 
   // Получить из базы список оригинальных адресов
   getToCleanAddresses () {
-    return this.getDataAsync("/toclean/all")
+    return this.getDataAsync("toclean/all")
   },
 
   // Общий метод для экселя

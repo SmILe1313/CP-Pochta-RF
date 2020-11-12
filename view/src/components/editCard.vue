@@ -1,12 +1,29 @@
 <template>
-  <b-container class="mt-5 mb-5">
+  <b-container class="mb-5">
     <b-overlay v-if="itemToEdit" :show="itemToEdit._saving">
+    
+    <b-form class="mt-4 mb-4">
+      <b-form-input
+        id="search"
+        type="text"
+        placeholder="Город, улица, дом, квартира одной строкой"
+        v-model="search"
+        debounce="500"
+        autofocus
+        list="results"
+        @input="getAddress()"/>
+
+        <datalist id="results">
+          <option v-for="result in results" :key="result">{{ result }}</option>
+        </datalist>
+    </b-form>
+
     <b-card :header-bg-variant="itemToEdit._rowVariant"
             :header="titleComputed"
             :header-text-variant="itemToEdit._rowVariant ? 'white': ''">
       <b-form>
         <b-form-row v-for="(group, i) in groups" :key="i">
-          <b-col v-for="field in group" :key="field.key" class="m-3">
+          <b-col v-for="field in group" :key="field.key" class="m-2">
           
           <label :for="field.key">{{ field.label }}</label>
           <b-form-input
@@ -21,14 +38,14 @@
         <b-row align-h="end" class="pr-3">
             <b-button variant="success"
                       size="md"
-                      class="mr-3"
+                      class="mr-2"
                       :disabled="!itemToEdit._changed"
                       @click="save()">
                       <b-icon-hdd class="mr-2"/>Сохранить
             </b-button>
             <b-button variant="primary "
                       size="md"
-                      class="mr-3"
+                      class="mr-2"
                       @click="skip()">
                       <b-icon-hdd class="mr-2"/>Пропустить
             </b-button>
@@ -77,7 +94,9 @@ export default {
     return {
       groups: FIELDS_BY_GROUP,
       items: this.data.map(row => ({ ...row, ...SYSTEM_FIELDS })),
-      editItemId: 0
+      editItemId: 0,
+      search: '',
+      results: ['Москва', 'Мурманск', 'Магнитогорск', 'Марьино', 'Мирный']
     }
   },
   watch: {
@@ -124,11 +143,17 @@ export default {
             console.log(e)
             clearSaving()
           })
+    },
+
+    // Получаем нормализованный адрес от api почты рф
+    getAddress () {
+      console.log('Запросить дату')
     }
   },
   computed: {
     itemToEdit () {
-      return this.items[this.editItemId]
+      const key = this.editItemId
+      return this.items[key]
     },
     totalComputed () {
       return this.items.length
