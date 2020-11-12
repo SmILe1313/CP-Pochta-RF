@@ -10,11 +10,10 @@
         v-model="search"
         debounce="500"
         autofocus
-        list="results"
-        @input="getAddress()"/>
+        list="address"/>
 
-        <datalist id="results">
-          <option v-for="result in results" :key="result">{{ result }}</option>
+        <datalist id="address">
+          <option v-for="address in normalizedAdressesAsString" :key="address">{{ address }}</option>
         </datalist>
     </b-form>
 
@@ -82,7 +81,7 @@ const SYSTEM_FIELDS = {
   _error: false,
   _rowVariant: ''
 }
-import { fieldsByGroup as FIELDS_BY_GROUP } from '@/data/fields'
+import { fieldsByGroup, fieldsToEdit } from '@/data/fields'
 export default {
   props: {
     data: {
@@ -92,16 +91,20 @@ export default {
   },
   data () {
     return {
-      groups: FIELDS_BY_GROUP,
+      fields: fieldsToEdit,
+      groups: fieldsByGroup,
       items: this.data.map(row => ({ ...row, ...SYSTEM_FIELDS })),
       editItemId: 0,
       search: '',
-      results: ['Москва', 'Мурманск', 'Магнитогорск', 'Марьино', 'Мирный']
+      normalizedAdressesAsString: []
     }
   },
   watch: {
     data (to, fr) {
       this.items = this.data.map(row => ({ ...row, ...SYSTEM_FIELDS }))
+    },
+    search (to) {
+      this.getAddress(to)
     }
   },
   methods: {
@@ -147,7 +150,16 @@ export default {
 
     // Получаем нормализованный адрес от api почты рф
     getAddress () {
-      console.log('Запросить дату')
+      const data = [this.search]
+      const editFieldsKeysMap = this.fields.map(({ key }) => key)
+      this.$bs.getNormalizeByString(data)
+        .then(addresses => {
+          this.normalizedAdressesAsString = addresses.map(address => (
+            Object.keys(address)
+              .filter(key => editFieldsKeysMap.includes(key))
+              .reduce((acc, key) => ([acc, address[key]].join(' ')), [])
+          ))
+        })
     }
   },
   computed: {
