@@ -1,5 +1,6 @@
 package ru.smile.services;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.smile.entities.TestTodos;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class TestService {
 
   private final static String apiLink = "http://jsonplaceholder.typicode.com/posts?_limit=10";

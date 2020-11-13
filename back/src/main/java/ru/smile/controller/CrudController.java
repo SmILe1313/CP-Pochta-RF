@@ -16,6 +16,7 @@ import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 import ru.smile.entities.User;
 import ru.smile.services.CleanAddresService;
+import ru.smile.services.OtpravkaService;
 import ru.smile.services.ToCleanAddresService;
 import ru.smile.services.UserService;
 
@@ -30,6 +31,8 @@ public class CrudController {
   @Autowired private CleanAddresService cleanAddresService;
 
   @Autowired private ToCleanAddresService toCleanAddresService;
+
+  @Autowired OtpravkaService otpravkaService;
 
   @GetMapping("/user/{id}") // get/
   public ResponseEntity<User> getUser(@PathVariable Long id){
@@ -59,10 +62,12 @@ public class CrudController {
     return new ResponseEntity<String>("Deleted", HttpStatus.OK);
   }
 
-  @PutMapping("/clean/{id}") //update/
+  @PutMapping("/clean/{id}") // Для повторной нормализации построчно
   public ResponseEntity<CleanAddress> updateClean(@PathVariable(value = "id") Long id, @Valid @RequestBody CleanAddress cleanAddress){
-    cleanAddresService.update(cleanAddress, id);
-    return new ResponseEntity<CleanAddress>(cleanAddress, HttpStatus.OK);
+    ToCleanAddress toCleanAddress = otpravkaService.toOneString(cleanAddress);
+    CleanAddress newCleanAddress = otpravkaService.normalizeAddressApi(toCleanAddress);
+    cleanAddresService.update(newCleanAddress, id);
+    return new ResponseEntity<CleanAddress>(newCleanAddress, HttpStatus.OK);
   }
 
   @DeleteMapping("/clean/{id}") //delete
@@ -71,6 +76,7 @@ public class CrudController {
     return new ResponseEntity<String>("Deleted", HttpStatus.OK);
   }
 
+  // Вернуть весь список CleanAddress
   @GetMapping("/clean/all")
   public ResponseEntity<List<CleanAddress>> getAllCleanAddresses() {
     try {
@@ -86,6 +92,7 @@ public class CrudController {
     }
   }
 
+  // Вернуть список CleanAddress с ошибками
   @GetMapping("/clean/witherrors")
   public ResponseEntity<List<CleanAddress>> getNotValidCleanAddresses() {
     try {

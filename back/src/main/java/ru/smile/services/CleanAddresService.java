@@ -53,4 +53,8 @@ public class CleanAddresService {
     return repo.findById(id).get();
   }
 
+  public List<CleanAddress> saveList(List<CleanAddress> cleanAddresses) {
+    return repo.saveAll(cleanAddresses);
+  }
+
 }

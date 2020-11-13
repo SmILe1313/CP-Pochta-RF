@@ -43,7 +43,7 @@ public class ExcelCsvService {
       List<ToCleanAddress> toCleanAddresses = excelHelper.excelToCleanAddress(file.getInputStream(), userService);
       toCleanAddressRepository.saveAll(toCleanAddresses);
 //      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
-//      cleanAddressRepository.saveAll(cleanAddresses);
+//      cleanAddresessService.saveList(cleanAddresses);
       List<CleanAddress> cleanAddresses = cleanAddresessService.getWithErrors();
       return cleanAddresses;
     } catch (IOException e) {
@@ -56,7 +56,7 @@ public class ExcelCsvService {
       List<ToCleanAddress> toCleanAddresses = csvHelper.csvToCleanAddress(file.getInputStream(), userService);
       toCleanAddressRepository.saveAll(toCleanAddresses);
 //      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
-//      cleanAddressRepository.saveAll(cleanAddresses);
+//      cleanAddresessService.saveList(cleanAddresses);
       List<CleanAddress> cleanAddresses = cleanAddresessService.getWithErrors();
       return cleanAddresses;
     } catch (IOException e) {

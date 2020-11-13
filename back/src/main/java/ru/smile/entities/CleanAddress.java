@@ -96,6 +96,10 @@ public class CleanAddress {
   public CleanAddress() {
   }
 
+  public CleanAddress(Long id) {
+    this.id = id;
+  }
+
   public CleanAddress(Long id, String addressType, String area, String building, String corpus, String hotel, String house, String index, String letter, String location, String numAddressType, String originalAddress, String place, String qualityCode, String region, String room, String slash, String street, String validationCode) {
     this.id = id;
     this.addressType = addressType;
@@ -278,11 +282,11 @@ public class CleanAddress {
     this.userId = userId;
   }
 
-  @JsonIgnore
+//  @JsonIgnore
   public Boolean isGoodQuality () {
     return goodQuality.contains(this.qualityCode);
   }
-  @JsonIgnore
+//  @JsonIgnore
   public Boolean isValidationQuality () {
     return goodValidation.contains(this.validationCode);
   }

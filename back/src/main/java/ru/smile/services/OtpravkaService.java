@@ -41,5 +41,51 @@ public class OtpravkaService {
     }
     return cleanAddresses;
   }
+
+  // Для повторной нормализации построчно
+  public CleanAddress normalizeAddressApi(ToCleanAddress toCleanAddress) {
+    List<ToCleanAddress> toCleanAddresses = new ArrayList<>();
+    if (toCleanAddress != null) {
+      toCleanAddresses.add(toCleanAddress);
+    }
+
+    // Нормализуем через апи Почты РФ
+//    List<CleanAddress> cleanAddresses = normalizeAddressApi(toCleanAddresses);
+    List<CleanAddress> cleanAddresses = new ArrayList<>();
+
+    CleanAddress cleanAddress;
+    if (!cleanAddresses.isEmpty()) {
+      cleanAddress = cleanAddresses.get(0);
+    } else {
+      cleanAddress = new CleanAddress(toCleanAddress.getId());
+    }
+    return cleanAddress;
+  }
+
+  // Обратно в одну строку
+  public ToCleanAddress toOneString(CleanAddress cleanAddress) {
+    return new ToCleanAddress(
+      cleanAddress.getId(),
+      cleanAddress.getAddressType() + ' ' + // Тип адреса
+      cleanAddress.getArea() + ' ' + // Район
+      cleanAddress.getRegion() + ' ' + // Область, регион
+      cleanAddress.getPlace() + ' ' + // Населенный пункт
+      cleanAddress.getLocation() + ' ' + // Микрорайон
+      cleanAddress.getStreet() + ' ' + // Часть адреса: Улица
+      cleanAddress.getHouse() + ' ' + // Часть адреса: Номер здания
+      cleanAddress.getBuilding() + ' ' + // Часть здания: Строение
+      cleanAddress.getCorpus() + ' ' + // Часть здания: Корпус
+      cleanAddress.getSlash() + ' ' + // Часть здания: Дробь
+      cleanAddress.getLetter() + ' ' + // Часть здания: Литера
+      cleanAddress.getRoom() + ' ' + // Часть здания: Номер помещения
+      cleanAddress.getIndex() + ' ' + // Почтовый индекс
+      cleanAddress.getHotel() + ' ' + // Название гостиницы
+      cleanAddress.getNumAddressType() + ' ' + // Номер для а/я, войсковая часть, войсковая часть ЮЯ,
+      cleanAddress.getQualityCode() + ' ' + // Код качества нормализации адреса
+      cleanAddress.getValidationCode() + ' ' + // Код проверки нормализации адреса
+      cleanAddress.getOriginalAddress() // Оригинальные адрес одной строкой
+    );
+  }
+
 }
 
