@@ -11,7 +11,7 @@ const HTTP = axios.create({
   timeout: 150000
 })
 
-const backLink = 'http://192.169.6.14:9000'
+const backLink = 'http://192.169.6.10:9000'
 const apiExcel = '/excel'
 const apiController = '/api'
 
@@ -88,6 +88,7 @@ const bs = {
     }
     let formData = new FormData()
     formData.append('files', file.data)
+    formData.append('filelink', file.link)
     return HTTP.post(backLink + apiExcel + '/clean/address', formData, config)
       .then(({ data }) => {
         file.error = !data // условно
@@ -100,20 +101,6 @@ const bs = {
         file.error = true
         file.responseReceived = true
       })
-
-    // const fantom = setInterval(() => {
-    //   if (file.uploaded < 100)  {
-    //     file.uploaded += 10
-    //   } else {
-    //     file.responseReceived = true
-    //     clearInterval(fantom)
-    //   }
-    // }, 100)
-
-    // const delay = (ms) => {
-    //   return new Promise(resolve => setTimeout(resolve, ms))
-    // }
-    // return delay(1000).then(() => file.data)
   },
 
   // Скачать нормализованный эксель-файл в виде xlsx/csv

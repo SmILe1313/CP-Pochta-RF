@@ -1,40 +1,64 @@
 <template>
-	<div class="login-layout">
-		<!-- <div class="login-header">
-			<logo class="login-logo"/>
-			<hr/>
-		</div> -->
-		<b-form @submit="onSubmit" class="login-form">
-			<b-form-group id="input-login" label="Логин" label-for="login">
-				<b-form-input squared
-					id="login"
-					v-model="form.login"
-					type="text"
-					required
-				></b-form-input>
-			</b-form-group>
+	<b-container fluid class="fullscreen">
+		<pHeader/>
+		<b-container class="mt-3 h-100" fluid="sm">
 
-			<b-form-group id="input-password" label="Пароль" label-for="password">
-				<b-form-input squared
-					id="password"
-					v-model="form.password"
-					type="password"
-					required
-				></b-form-input>
-			</b-form-group>
+			<b-row align-h="center" class="p-5">
+				<h2 class="text-center font-weight-normal"> Вход </h2>
+			</b-row>
 
-			<div class="login-buttons">
-				<b-button type="submit" squared variant="outline-primary">Войти</b-button>
-				<logoEsia class="logo-esia"/>
-			</div>
-		</b-form>
+			<b-row align-h="center" class="p-2">
+				<b-form-input
+						size="lg"
+						class="w-50 inp-theme-blue"
+						id="login"
+						v-model="form.login"
+						type="text"
+						placeholder="Эл. почта или телефон +7-ХХХ-ХХХ-ХХ-ХХ"
+						required/>
+			</b-row>
 
-	</div>
+			<b-row align-h="center" class="p-2">
+				<b-form-input
+						size="lg"
+						class="w-50 inp-theme-blue"
+						id="password"
+						v-model="form.password"
+						type="password"
+						placeholder="Пароль"
+						required/>
+			</b-row>
+
+			<b-row align-h="center" class="p-4">
+				<b-button class="btn-theme-blue px-5 py-2" @click="onSubmit">Войти</b-button>
+			</b-row>
+
+			<b-row align-h="center" class="p-1">
+				<b-row align-h="between" class="w-50">
+					<b-link href="#/help" class="text-theme-blue px-5"> Не помню пароль </b-link>
+					<b-link href="#/help" class="text-theme-blue px-5"> Зарегистрироваться </b-link>
+				</b-row>
+			</b-row>
+
+			<b-row align-h="center" class="px-5 mt-4">
+				<b-row align-h="between" class="w-75 px-5 mt-4">
+					<hr class="w-100 px-5"/>
+				</b-row>
+			</b-row>
+
+			<b-row align-h="center">
+				<b-link href="#/help" class="text-theme-blue p-4"><esia/> Войти через Госуслуги </b-link>
+			</b-row>
+
+		</b-container>
+		<pFooter/>
+	</b-container>
 </template>
 
 <script>
-import logo from '@/components/logo'
-import logoEsia from '@/components/logoEsia'
+import pHeader from '@/components/p-header'
+import pFooter from '@/components/p-footer'
+import esia from '@/icons/logoEsia'
 export default {
   data () {
     return {
@@ -51,51 +75,20 @@ export default {
 			e.preventDefault()
 			console.log(this.form)
 			this.$bs.doLogin(this.form.login, this.form.password)
-				.then(data => {
-					console.log(data)
-					if (data) {
-						// this.$set(this, '$loggedIn', true)
-						// this.$router.push('/upload')
-					}
+				.then(() => {
+					this.$router.push('/')
 				})
 		}
 	},
 	components: {
-		logo,
-		logoEsia
+		pHeader,
+		esia,
+		pFooter
 	}
 }
 </script>
 
-<style lang="stylus">
-.login-layout
-	display flex
-	flex-direction column
-	width 100%
-	height 100vh
-	justify-content center
-	align-items center
-	hr
-		width 100%
-
-.login-form
-	// margin-bottom auto
-
-.login-buttons
-	display flex
-	justify-content space-between
-
-.logo-esia
-	width 38px
-	height 38px
-
-.login-header
-	display flex
-	flex-direction column
-	width 100%
-	padding 1rem 0
-	margin-bottom auto
-	.login-logo
-		margin auto
-
+<style lang="stylus" scoped>
+.fullscreen
+	height 80vh
 </style>
