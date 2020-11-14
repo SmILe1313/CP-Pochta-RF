@@ -35,7 +35,7 @@
 					</div>
 				</div>
 		</div>
-		<b-row align-h="center">
+		<b-row align-h="center" v-if="file.data">
 				<b-button size="lg"
 						class="btn-theme-blue m-5 py-2 px-5"
 						@click="upload()">

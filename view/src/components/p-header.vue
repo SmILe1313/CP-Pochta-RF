@@ -2,7 +2,7 @@
   <header class="mt-3">
     <div class="header-info">
         <logo class="login-logo"/>
-        <b-link href="#/help" class="text-theme-blue"><b-icon-question-circle size="sm"/> Помощь </b-link>
+        <b-link href="#/about" class="text-theme-blue"><b-icon-question-circle size="sm"/> Помощь </b-link>
     </div>
     <hr/>
   </header>

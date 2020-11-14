@@ -1,5 +1,5 @@
 <template>
-  <b-container class="mt-5">
+  <b-container class="mt-5 footer">
     <b-row align-v="center" align-h="between">
       <b-col cols="4">
         <b-link href="#/" class="text-theme-gray"> 2020 © АО Почта России </b-link>
