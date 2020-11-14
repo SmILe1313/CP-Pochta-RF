@@ -8,7 +8,7 @@
             :class="{ 'error': address.addr.delivery === 2,
                       'verify': address.addr.delivery === 1 }"
             @click="expand(address)">
-          <p>{{address.addr.outaddr}}</p>
+          <p :title="address.addr.outaddr">{{address.addr.outaddr}}</p>
           <b-icon-caret-up-fill class="expander" key="up" v-if="address.expanded"/>
           <b-icon-caret-down-fill class="expander" key="down" v-else/>
         </div>
@@ -17,16 +17,29 @@
         <collapse>
         <template v-if="address.expanded">
             <b-form class="pb-4">
-              <b-form-row v-for="(group, i) in groups" :key="i">
-                <b-col v-for="field in group" :key="field.key" class="my-2">
-                
-                <label :for="field.key">{{ field.label }}</label>
+              <!-- Поля общие -->
+              <b-form-row>
+                <b-col v-for="uField in userFields" :key="uField" class="my-2">
+                  <label :for="uField">ФИО</label>
+                  <b-form-input
+                    class="inp-theme-blue"
+                    :id="uField"
+                    type="text"
+                    v-model="(address.fio || {})[uField]"
+                    @input="changeStatus(address)"/>
+                </b-col>
+              </b-form-row>
+
+              <b-form-row>
+                <b-col v-for="(elField, key) in elementFields" :key="elField.name" class="my-2" cols="3">
+                <label :for="elField.name">{{ elField.label }}</label>
                 <b-form-input
-                  class="inp-theme-blue"
-                  :id="field.key"
-                  :type="field.type"
-                  v-model="address[field.key]"
-                  @input="changeStatus(address)"/>
+                    class="inp-theme-blue"
+                    :id="elField.name"
+                    type="text"
+                    :placeholder="'Введите ' + elField.label.toLowerCase()"
+                    v-model="(address.addr.element[getelId(address.addr.element, key)] || {}).val"
+                    @input="changeStatus(address)"/>
 
                 </b-col>
               </b-form-row>
@@ -55,32 +68,22 @@ const SYSTEM_FIELDS = {
 }
 import { fieldsByGroup, fieldsToEdit } from '@/data/fields'
 import collapse from './accordion'
-const addrFake = [
-  {
-    expanded: false,
-    addr: {
-      quid: 'sdjdsa8-saasdjc0',
-      outaddr: '141420, Российская Федерация, обл Московская, г Химки, мкр Сходня, ул Черняховского, д. 34',
-      delivery: 1
-    }
-  },
-  {
-    expanded: false,
-    addr: {
-      quid: 'sdjdsa8-saasdjffc0',
-      outaddr: '140207, Российская Федерация, обл Московская, г Воскресенск, д Глиньково, д. 13, литера А',
-      delivery: 0
-    }
-  },
-  {
-    expanded: false,
-    addr: {
-      quid: 'sdjdsa8-saasdjffc0',
-      outaddr: '140209, Российская Федерация, обл Московская, г Воскресенск, с Федино, д. 9, кв 41',
-      delivery: 2
-    }
-  }
-]
+
+const userFields = ['fullname']
+const elementFields = {
+  C: { name: 'County', 'label': 'Страна' },
+  R: { name: 'Region', 'label': 'Регион' },
+  A: { name: 'Area', 'label': 'Район' },
+  P: { name: 'Place', 'label': 'Населенный пункт' },
+  T: { name: 'Territory', 'label': 'Область' },
+  S: { name: 'Street', 'label': 'Улица' },
+  N: { name: 'Number', 'label': 'Дом' },
+  L: { name: 'Letter', 'label': 'Литера' },
+  D: { name: 'Delimiter', 'label': 'Дробь' },
+  E: { name: 'External', 'label': 'Корпус' },
+  B: { name: 'Building', 'label': 'Строение' },
+  F: { name: 'Flat', 'label': 'Помещение' }
+}
 export default {
   props: {
     data: {
@@ -90,18 +93,22 @@ export default {
   },
   data () {
     return {
-      fields: fieldsToEdit,
+      userFields: userFields,
+      elementFields: elementFields,
       groups: fieldsByGroup,
-      // addresses: this.data.map(address => ({ ...address, ...SYSTEM_FIELDS }))
-      addresses: addrFake.map(address => ({ ...address, ...SYSTEM_FIELDS }))
+      addresses: this.data.map(address => ({ ...address, ...SYSTEM_FIELDS }))
     }
   },
   watch: {
     data (to) {
-      this.addresses = this.data.map(row => ({ ...address, ...SYSTEM_FIELDS }))
+      this.addresses = this.data.map(address => ({ ...address, ...SYSTEM_FIELDS }))
     }
   },
   methods: {
+    getelId(elements, key) {
+      const index = elements.findIndex(el => el.content === key)
+      return index
+    },
     expand (address) {
       address.expanded = !address.expanded
     },
@@ -115,7 +122,7 @@ export default {
         address._saving = false
         address._changed = false
       }, 1500)
-      return this.$bs.updateAsync(row, row.id)
+      return this.$bs.updateAsync(address, address.id)
         .then(resp => {
             address._saved = true
             console.log('saved')
@@ -156,6 +163,10 @@ export default {
     &.verify
       border 1px solid #ff9800
     p
+      max-width 95%
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
       margin 5px
       font-weight 500
     .expander

@@ -105,13 +105,18 @@ const bs = {
 
   // Скачать нормализованный эксель-файл в виде xlsx/csv
   downloadCleanAddresses (type, delivery) {
-    // const query = delivery ? '?delivery=' + delivery : ''
+    const namemartix = {
+      0: 'Распознанные адреса',
+      1: 'Частично распознанные',
+      2: 'Нераспознанные адреса',
+      '-1': 'Все адреса'
+    }
     return this.getExeclDataAsync(backLink + apiExcel + '/download/' + type + '/' + delivery)
       .then(resp => {
         const blob = new Blob([resp], { type:'application/vnd.ms-excel '})
         let link = document.createElement('a')
         let date = new Date()
-        link.download = "Нормализованные адреса_" + date.getDate() + (date.getMonth() + 1) + date.getFullYear() + "." + type
+        link.download = namemartix[delivery] + '_' + date.getDate() + (date.getMonth() + 1) + date.getFullYear() + "." + type
         link.href = window.URL.createObjectURL(blob)
         link.click()
         link.remove()

@@ -15,6 +15,7 @@
     <div class="section">
       <div class="filters">
         <div class="filter" :class="{ 'active': filter.active }" v-for="filter in filters" :key="filter.name" @click="setFilter(filter)">{{filter.name}}</div>
+        <div class="filter" key="settings">Настройки <b-icon-sliders class="ml-1"/></div>
       </div>
     </div>
     <br>
@@ -125,8 +126,7 @@ export default {
   },
   computed: {
     addressesFiltered () {
-      // return this.addresses.filter(this.activeFilter.filter)
-      return []
+      return this.addresses.filter(this.activeFilter.filter)
     },
     filename () {
       return this.$root.fileName || 'Результат обработки'
@@ -193,6 +193,9 @@ export default {
     &.active
       background-color #0055A6
       color white
+    &:last-child
+      margin-left auto
+      margin-right 0
 .fullscreen
   display flex
   flex-direction column

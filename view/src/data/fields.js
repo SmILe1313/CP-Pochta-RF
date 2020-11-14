@@ -1,12 +1,7 @@
 const fieldsObject = {
-  check: {
-    label: 'Действия',
-    type: 'system'
-  },
-  id: {
-    label: 'ID',
-    type: 'number',
-    disabled: true
+  fio: {
+    label: 'ФИО',
+    type: 'text'
   },
   'address-type': {
     label: 'Тип адреса',

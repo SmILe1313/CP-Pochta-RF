@@ -49,6 +49,8 @@ export default {
   border none
   border-radius 4px
   background linear-gradient(263.82deg, #0064C5 4.04%, #004C9B 95.62%)
+  font-size .9rem
+  font-weight 500
   .btn-secondary
     background #0064c5
     border inherit
