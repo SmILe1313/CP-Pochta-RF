@@ -50,6 +50,18 @@ public class ValidateResponseService {
   public boolean update(ValidateResponse entity, Long id) {
     if (repo.existsById(id)) {
       entity.setId(id);
+      if (entity.getAddr() != null) {
+        if (entity.getAddr().getElement() != null) {
+          elementRepository.saveAll(entity.getAddr().getElement());
+        }
+        addrResponseRepository.save(entity.getAddr());
+      }
+      if (entity.getFio() != null) {
+        fioRepository.save(entity.getFio());
+      }
+      if(entity.getIndex() != null) {
+        indexRepository.save(entity.getIndex());
+      }
       repo.save(entity);
       return true;
     }
@@ -123,7 +135,7 @@ public class ValidateResponseService {
 
   public ValidateRequest toStandartRequest (ValidateSimpleRequest validateSimpleRequest) {
     List<AddrRequest> addrRequestList = new ArrayList<>(Collections.singletonList(new AddrRequest(validateSimpleRequest.getAddr())));
-    return new ValidateRequest(validateSimpleRequest.getId(), addrRequestList);
+    return new ValidateRequest(validateSimpleRequest.getId(), PochtaService.reqId, PochtaService.version, addrRequestList);
   }
 
 }
