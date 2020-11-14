@@ -98,7 +98,6 @@ export default {
 			this.showDropZone = false
 			const [data] = [...e.dataTransfer.files]
 			this.file.data = data
-      this.upload(this.file)
 		},
 		upload () {
       this.loading = true
