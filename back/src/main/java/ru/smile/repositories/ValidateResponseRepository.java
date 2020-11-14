@@ -15,6 +15,6 @@ import java.util.UUID;
 public interface ValidateResponseRepository extends JpaRepository<ValidateResponse, Long> {
 
   List<ValidateResponse> findByAddrDeliveryAndResponseUuid(Integer i, UUID uuid);
-
+  List<ValidateResponse> findByResponseUuid(UUID uuid);
   Long countByAddrDeliveryAndResponseUuid(Integer i,UUID uuid);
 }

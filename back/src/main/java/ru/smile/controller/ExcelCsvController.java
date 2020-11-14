@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,10 +69,10 @@ public class ExcelCsvController {
     return new ResponseEntity<ValidateResponseCounts>(new ValidateResponseCounts(), HttpStatus.BAD_REQUEST);
   }
 
-  @GetMapping("/download/xlsx")
-  public ResponseEntity<InputStreamResource> getFileXlsx() {
+  @GetMapping("/download/xlsx/{delivery}")
+  public ResponseEntity<InputStreamResource> getFileXlsx(@PathVariable(value = "delivery") int delivery) {
     String filename = "The_normalized_addresses.xlsx";
-    InputStreamResource file = new InputStreamResource(excelCsvService.downloadFileXlsx());
+    InputStreamResource file = new InputStreamResource(excelCsvService.downloadFileXlsx(delivery));
 
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);

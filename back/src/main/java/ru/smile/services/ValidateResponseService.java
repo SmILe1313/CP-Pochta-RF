@@ -57,7 +57,7 @@ public class ValidateResponseService {
   }
 
   public List<ValidateResponse> getAll() {
-    return (List<ValidateResponse>) repo.findAll();
+    return (List<ValidateResponse>) repo.findByResponseUuid(getResponseUuid());
   }
 
   // Доставочные
