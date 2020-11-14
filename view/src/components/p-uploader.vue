@@ -1,6 +1,6 @@
 <template>
 	<div class="fullscreen">
-		<b-overlay :show="loading" class="overlay-layout" spinner-type="grow" spinner-variant="primary">
+		<b-overlay :show="loading" class="overlay-layout" :class="{ 'opacity': showSettings }" spinner-type="grow" spinner-variant="primary">
 		<div
 				class="dropzone"
 				:class="{ 'draghover': dragHover,
@@ -11,7 +11,7 @@
         @dragover.prevent>
 
 				<div class="dropzone-white">
-					<b-icon-sliders class="ml-1 settins" :class="{ 'disabled': !file.data }"/>
+					<b-icon-sliders class="ml-1 settins" :class="{ 'disabled': !file.data }" @click="toggleSettings"/>
 					<label class="drop-border">
 						<div class="drop-mark" :class="{ 'filled': file.data }">{{ fileName }}</div>
 						<input type="file"
@@ -35,26 +35,35 @@
 					</div>
 				</div>
 		</div>
+		<collapse>
 		<b-row align-h="center" v-if="file.data">
 				<b-button size="lg"
-						class="btn-theme-blue m-5 py-2 px-5"
+						class="btn-theme-blue mt-5 py-2 px-5"
 						@click="upload()">
 						Продолжить
 				</b-button>
 		</b-row>
+		</collapse>
 		</b-overlay>
+		<transition name="fade">
+			<pSettings :file="file.data" v-if="showSettings" @close="toggleSettings" @setFileScheme="addConfig"/>
+		</transition>
 	</div>
 </template>
 
 <script>
+import collapse from './accordion'
+import pSettings from './p-settings'
 export default {
   data () {
     return {
 			showDropZone: false,
 			dragHover: false,
 			loading: false,
+			showSettings: false,
 			file: {
 				data: null,
+				config: null,
 				link: '',
         uploaded: 0,
         error: false,
@@ -70,6 +79,9 @@ export default {
 		document.removeEventListener('dragenter', this.handleDragEnter)
 	},
   methods: {
+		toggleSettings () {
+			this.showSettings = !this.showSettings
+		},
 		handleDragEnd (e) {
 			this.showDropZone = false
 		},
@@ -80,9 +92,6 @@ export default {
 		handleDragOver () {
       this.dragHover = true
     },
-    // handleDragLeave () {
-		// 	this.dragHover = false
-		// },
 		
     handleDrop (e) {
 			this.dragHover = false
@@ -108,6 +117,9 @@ export default {
           }, 1000)
 				})
 		},
+		addConfig (conf) {
+			this.file.config = conf
+		},
 		setFile (e) {
 			const [file] = [...e.target.files]
 			this.file.data = file
@@ -119,6 +131,8 @@ export default {
 		}
 	},
 	components: {
+		collapse,
+		pSettings
 	}
 }
 </script>
@@ -132,6 +146,8 @@ export default {
 	display flex
 	flex-direction column
 	margin auto
+	&.opacity
+		opacity 0
 
 .dropzone
 	overflow hidden
@@ -237,4 +253,12 @@ export default {
 				background-color #E6E6E6
 		input
 			pointer-events all
+
+.fade-enter-active,
+.fade-leave-active
+	transition opacity .5s
+
+.fade-enter,
+.fade-leave-to
+	opacity 0
 </style>

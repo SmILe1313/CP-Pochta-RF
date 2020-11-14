@@ -89,6 +89,7 @@ const bs = {
     let formData = new FormData()
     formData.append('files', file.data)
     formData.append('filelink', file.link)
+    formData.append('scheme', JSON.stringify(file.config))
     return HTTP.post(backLink + apiExcel + '/clean/address', formData, config)
       .then(({ data }) => {
         file.error = !data // условно
