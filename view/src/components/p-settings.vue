@@ -55,7 +55,8 @@ export default {
         { name: 'Улица', key: 'street', _used: false },
         { name: 'Дом', key: 'home', _used: false },
         { name: 'Квартира', key: 'room', _used: false },
-        { name: 'ID', key: 'id', _used: false }
+        { name: 'ID', key: 'id', _used: false },
+        { name: 'Индекс', key: 'index', _used: false }
       ],
       cols: [],
       rows: [],

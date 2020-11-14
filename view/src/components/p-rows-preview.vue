@@ -16,6 +16,7 @@
         <!-- Форма -->
         <collapse>
         <template v-if="address.expanded">
+          <b-overlay :show="address._saving" spinner-type="grow" spinner-variant="primary">
             <b-form class="pb-4">
               <!-- Поля общие -->
               <b-form-row>
@@ -62,6 +63,7 @@
               </b-row>
 
             </b-form>
+          </b-overlay>
         </template>
         </collapse>
     </div>
