@@ -15,7 +15,9 @@ import javax.validation.Valid;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 import ru.smile.entities.User;
+import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
+import ru.smile.entities.ValidateSimpleRequest;
 import ru.smile.services.PochtaService;
 import ru.smile.services.UserService;
 import ru.smile.services.ValidateResponseService;
@@ -60,13 +62,13 @@ public class CrudController {
     return new ResponseEntity<String>("Deleted", HttpStatus.OK);
   }
 
-//  @PutMapping("/clean/{id}") // Для повторной нормализации построчно
-//  public ResponseEntity<CleanAddress> updateClean(@PathVariable(value = "id") Long id, @Valid @RequestBody CleanAddress cleanAddress){
-//    ToCleanAddress toCleanAddress = pochtaService.toOneString(cleanAddress);
-//    CleanAddress newCleanAddress = pochtaService.normalizeAddressApi(toCleanAddress);
-//    cleanAddresService.update(newCleanAddress, id);
-//    return new ResponseEntity<CleanAddress>(newCleanAddress, HttpStatus.OK);
-//  }
+  @PutMapping("/clean/{id}") // Для повторной нормализации построчно
+  public ResponseEntity<ValidateResponse> updateClean(@PathVariable(value = "id") Long id, @Valid @RequestBody ValidateSimpleRequest validateSimpleRequest){
+    ValidateRequest validateRequest = validateResponseService.toStandartRequest(validateSimpleRequest);
+    ValidateResponse validateResponse = pochtaService.normalizeAddressApi(validateRequest);
+    validateResponseService.update(validateResponse, id);
+    return new ResponseEntity<ValidateResponse>(validateResponse, HttpStatus.OK);
+  }
 
   @DeleteMapping("/clean/{id}") //delete
   public ResponseEntity<String> deleteClean(@PathVariable(value = "id") Long id) {

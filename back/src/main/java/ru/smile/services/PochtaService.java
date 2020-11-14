@@ -55,23 +55,15 @@ public class PochtaService {
   }
 
   // Для повторной нормализации построчно
-  public CleanAddress normalizeAddressApi(ToCleanAddress toCleanAddress) {
-    List<ToCleanAddress> toCleanAddresses = new ArrayList<>();
-    if (toCleanAddress != null) {
-      toCleanAddresses.add(toCleanAddress);
+  public ValidateResponse normalizeAddressApi(ValidateRequest validateRequest) {
+    List<ValidateRequest> validateRequestList = new ArrayList<>();
+    if (validateRequest != null) {
+      validateRequestList.add(validateRequest);
     }
 
     // Нормализуем через апи Почты РФ
-//    List<CleanAddress> cleanAddresses = normalizeAddressApi(toCleanAddresses);
-    List<CleanAddress> cleanAddresses = new ArrayList<>();
-
-    CleanAddress cleanAddress;
-    if (!cleanAddresses.isEmpty()) {
-      cleanAddress = cleanAddresses.get(0);
-    } else {
-      cleanAddress = new CleanAddress(toCleanAddress.getId());
-    }
-    return cleanAddress;
+    List<ValidateResponse> validateResponseList = normalizeAddressApi(validateRequestList);
+    return validateResponseList.isEmpty() ? new ValidateResponse() : validateResponseList.get(0);
   }
 
   public UUID getResponseUUID() {
