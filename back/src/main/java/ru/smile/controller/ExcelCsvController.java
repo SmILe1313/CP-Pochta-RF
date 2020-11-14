@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ValidateResponse;
+import ru.smile.entities.ValidateResponseCounts;
 import ru.smile.services.ExcelCsvService;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
@@ -32,20 +33,20 @@ public class ExcelCsvController {
   @Autowired ExcelCsvService excelCsvService;
 
   @PostMapping("/clean/address")
-  public ResponseEntity<List<ValidateResponse>> cleanFile(@RequestParam("files") MultipartFile file)  throws IOException {
+  public ResponseEntity<ValidateResponseCounts> cleanFile(@RequestParam("files") MultipartFile file)  throws IOException {
     String message = "";
 
     // Если файл xlsx
     if (ExcelHelper.hasExcelFormat(file)) {
       try {
-        List<ValidateResponse> validateResponseList = excelCsvService.saveAndNormalizeXlsx(file);
+        ValidateResponseCounts validateResponseCounts = excelCsvService.saveAndNormalizeXlsx(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
-        return new ResponseEntity<>(validateResponseList, HttpStatus.OK);
+        return new ResponseEntity<>(validateResponseCounts, HttpStatus.OK);
 //        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
       } catch (Exception e) {
         message = "Невозможно загрузить xlsx-файл: " + file.getOriginalFilename() + "!";
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ValidateResponseCounts>(new ValidateResponseCounts(), HttpStatus.BAD_REQUEST);
 //        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
       }
     }
@@ -53,18 +54,18 @@ public class ExcelCsvController {
     // Если файл csv
     if (CsvHelper.hasCSVFormat(file)) {
       try {
-        List<ValidateResponse> validateResponseList = excelCsvService.saveAndNormalizeCsv(file);
+        ValidateResponseCounts validateResponseCounts = excelCsvService.saveAndNormalizeCsv(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
-        return new ResponseEntity<>(validateResponseList, HttpStatus.OK);
+        return new ResponseEntity<>(validateResponseCounts, HttpStatus.OK);
       } catch (Exception e) {
         message = "Невозможно загрузить csv-файл: " + file.getOriginalFilename() + "!";
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ValidateResponseCounts>(new ValidateResponseCounts(), HttpStatus.BAD_REQUEST);
       }
     }
 
     message = "Пожалуйста, выберите xlsx или csv файл!";
-    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<ValidateResponseCounts>(new ValidateResponseCounts(), HttpStatus.BAD_REQUEST);
   }
 
   @GetMapping("/download/xlsx")

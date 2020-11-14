@@ -30,6 +30,7 @@ import ru.smile.entities.ToCleanAddress;
 import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
 import ru.smile.services.ExcelCsvService;
+import ru.smile.services.PochtaService;
 import ru.smile.services.UserService;
 
 @Component
@@ -59,6 +60,8 @@ public class CsvHelper {
           new ArrayList<>(Collections.singletonList(new AddrRequest(csvRecord.get("Address"))))
         );
 
+        validateRequest.setReqId(PochtaService.reqId);
+        validateRequest.setVersion(PochtaService.version);
         validateRequest.setUserId(userService.getUserId());
         validateRequestList.add(validateRequest);
       }
