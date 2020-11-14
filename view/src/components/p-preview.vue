@@ -63,7 +63,7 @@ export default {
         width: '400px',
         donut: true,
         donutWidth: 60,
-        showLabel: false
+        showLabel: true
       }
     }
 	},
@@ -84,6 +84,17 @@ export default {
 
 <style lang="stylus">
 @require '../styles/chartist.min.css'
+
+.ct-label
+  font-size 15px
+  font-weight bold
+  &:nth-child(1)
+    fill white
+  &:nth-child(2)
+    fill black
+  &:nth-child(3)
+    fill black
+
 .ct-series-a
   path
     stroke #0055A6 !important
