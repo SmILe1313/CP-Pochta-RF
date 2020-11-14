@@ -15,9 +15,18 @@
     <div class="section">
       <div class="filters">
         <div class="filter" :class="{ 'active': filter.active }" v-for="filter in filters" :key="filter.name" @click="setFilter(filter)">{{filter.name}}</div>
-        <div class="filter" key="settings">Настройки <b-icon-sliders class="ml-1"/></div>
+        <div class="filter" :class="{ 'active': showSettings }" key="settings" @click="showSettings = !showSettings">Настройки <b-icon-sliders class="ml-1"/></div>
       </div>
     </div>
+
+    <collapse>
+    <div class="section" v-if="showSettings"><br>
+      <div class="filters">
+        <div class="filter" v-for="setting in settings" :key="setting">{{setting}}</div>
+        <div/>
+      </div>
+    </div>
+    </collapse>
     <br>
     <!-- Строки -->
     <div class="section">
@@ -44,6 +53,7 @@
 import VueChartist from 'v-chartist'
 import Chartist from 'chartist'
 import pRowsPreview from './p-rows-preview'
+import collapse from './accordion'
 
 const elementFields = {
   C: { name: 'County', 'tname': 'Страна', content: 'C', val: '' },
@@ -76,6 +86,8 @@ export default {
         { name: 'Частично распознано', active: true, delivery: 1, filter: ({addr}) => (addr.delivery === 1) },
         { name: 'Все', active: false, delivery: -1, filter: () => { return true } }
       ],
+      settings: ['Одной строкой', 'Разбить по колонкам', 'ФИО раздельно'],
+      showSettings: false,
       listener: {
         draw (data) {
           if (data.type === 'slice') {
@@ -176,7 +188,8 @@ export default {
   },
 	components: {
     'vue-chartist': VueChartist,
-    pRowsPreview
+    pRowsPreview,
+    collapse
 	}
 }
 </script>
