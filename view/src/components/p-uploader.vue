@@ -1,6 +1,6 @@
 <template>
 	<div class="fullscreen">
-		
+		<b-overlay :show="loading" class="overlay-layout" spinner-type="grow" spinner-variant="primary">
 		<div
 				class="dropzone"
 				:class="{ 'draghover': dragHover,
@@ -35,6 +35,7 @@
 					</div>
 				</div>
 		</div>
+		</b-overlay>
 	</div>
 </template>
 
@@ -116,6 +117,10 @@ export default {
 .fullscreen
 	display flex
 	height 80vh
+
+.overlay-layout
+	display flex
+	margin auto
 
 .dropzone
 	overflow hidden
