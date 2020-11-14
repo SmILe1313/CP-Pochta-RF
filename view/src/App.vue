@@ -54,6 +54,9 @@ export default {
   .btn-secondary
     background #0064c5
     border inherit
+  &.btn-lg
+    font-size 1rem
+    font-weight normal
 
 .inp-theme
   &-blue

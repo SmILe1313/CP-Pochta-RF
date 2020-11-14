@@ -11,6 +11,7 @@
         @dragover.prevent>
 
 				<div class="dropzone-white">
+					<b-icon-sliders class="ml-1 settins" :class="{ 'disabled': !file.data }"/>
 					<label class="drop-border">
 						<div class="drop-mark" :class="{ 'filled': file.data }">{{ fileName }}</div>
 						<input type="file"
@@ -36,7 +37,7 @@
 		</div>
 		<b-row align-h="center">
 				<b-button size="lg"
-						class="btn-theme-blue m-5 py-3 px-4"
+						class="btn-theme-blue m-5 py-2 px-5"
 						@click="upload()">
 						Продолжить
 				</b-button>
@@ -155,6 +156,19 @@ export default {
 		min-width 300px
 		height 100%
 		pointer-events none
+		position relative
+		.settins
+			position absolute
+			top 30px
+			left 30px
+			pointer-events all
+			cursor pointer
+			opacity 1
+			fill #0055A6
+			transition opacity .2s ease
+			&.disabled
+				opacity 0
+
 		&:hover
 			.drop-border
 				transform scale(1.1)
