@@ -11,9 +11,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ru.smile.entities.AddrRequest;
+import ru.smile.entities.AddrResponse;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
+import ru.smile.entities.ValidateRequest;
+import ru.smile.entities.ValidateResponse;
 import ru.smile.services.ExcelCsvService;
+import ru.smile.services.PochtaService;
 import ru.smile.services.UserService;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +26,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,14 +51,14 @@ public class ExcelHelper {
     return TYPE.equals(file.getContentType());
   }
 
-  public List<ToCleanAddress> excelToCleanAddress(InputStream is, UserService userService) {
+  public List<ValidateRequest> excelToValidateRequest(InputStream is, UserService userService) {
     try {
       Workbook workbook = new XSSFWorkbook(is);
 
       Sheet sheet = workbook.getSheetAt(0);
       Iterator<Row> rows = sheet.iterator();
 
-      List<ToCleanAddress> toCleanAddresses = new ArrayList<ToCleanAddress>();
+      List<ValidateRequest> validateRequestList = new ArrayList<ValidateRequest>();
 
       int rowNumber = 0;
       while (rows.hasNext()) {
@@ -65,7 +72,7 @@ public class ExcelHelper {
 
         Iterator<Cell> cellsInRow = currentRow.iterator();
 
-        ToCleanAddress toCleanAddress = new ToCleanAddress();
+        ValidateRequest validateRequest = new ValidateRequest();
 
         int cellIdx = 0;
         while (cellsInRow.hasNext()) {
@@ -73,34 +80,37 @@ public class ExcelHelper {
 
           switch (cellIdx) {
             case 0:
-              toCleanAddress.setId((long) currentCell.getNumericCellValue());
+              validateRequest.setId((long) currentCell.getNumericCellValue());
               break;
 
             case 1:
-              toCleanAddress.setOriginalAddress(currentCell.getStringCellValue());
+              AddrRequest addrRequest = new AddrRequest(currentCell.getStringCellValue());
+              validateRequest.setAddr(new ArrayList<>(Collections.singletonList(addrRequest)));
               break;
 
             default:
               break;
           }
 
-          toCleanAddress.setUserId(userService.getUserId());
+          validateRequest.setReqId(PochtaService.reqId);
+          validateRequest.setVersion(PochtaService.version);
+          validateRequest.setUserId(userService.getUserId());
 
           cellIdx++;
         }
 
-        toCleanAddresses.add(toCleanAddress);
+        validateRequestList.add(validateRequest);
       }
 
       workbook.close();
 
-      return toCleanAddresses;
+      return validateRequestList;
     } catch (IOException e) {
       throw new RuntimeException("Ошибка парсинга xlsx-файла: " + e.getMessage());
     }
   }
 
-  public static ByteArrayInputStream cleanAddressToExcel(List<CleanAddress> cleanAddresses) {
+  public static ByteArrayInputStream validateResponseToExcel(List<ValidateResponse> validateResponseList) {
 
     try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
       Sheet sheet = workbook.createSheet(SHEET);
@@ -122,28 +132,28 @@ public class ExcelHelper {
       }
 
       int rowIdx = 1;
-      for (CleanAddress cleanAddress : cleanAddresses) {
+      for (ValidateResponse validateResponse : validateResponseList) {
         Row row = sheet.createRow(rowIdx++);
 
-        row.createCell(0).setCellValue(cleanAddress.getId()); // Идентификатор записи
-        row.createCell(1).setCellValue(cleanAddress.getAddressType()); // Тип адреса
-        row.createCell(2).setCellValue(cleanAddress.getArea()); // Район
-        row.createCell(3).setCellValue(cleanAddress.getRegion()); // Область, регион
-        row.createCell(4).setCellValue(cleanAddress.getPlace()); // Населенный пункт
-        row.createCell(5).setCellValue(cleanAddress.getLocation()); // Микрорайон
-        row.createCell(6).setCellValue(cleanAddress.getStreet()); // Часть адреса: Улица
-        row.createCell(7).setCellValue(cleanAddress.getHouse()); // Часть адреса: Номер здания
-        row.createCell(8).setCellValue(cleanAddress.getBuilding()); // Часть здания: Строение
-        row.createCell(9).setCellValue(cleanAddress.getCorpus()); // Часть здания: Корпус
-        row.createCell(10).setCellValue(cleanAddress.getSlash()); // Часть здания: Дробь
-        row.createCell(11).setCellValue(cleanAddress.getLetter()); // Часть здания: Литера
-        row.createCell(12).setCellValue(cleanAddress.getRoom()); // Часть здания: Номер помещения
-        row.createCell(13).setCellValue(cleanAddress.getIndex()); // Почтовый индекс
-        row.createCell(14).setCellValue(cleanAddress.getHotel()); // Название гостиницы
-        row.createCell(15).setCellValue(cleanAddress.getNumAddressType()); // Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта
-        row.createCell(16).setCellValue(cleanAddress.getQualityCode()); // Код качества нормализации адреса
-        row.createCell(17).setCellValue(cleanAddress.getValidationCode()); // Код проверки нормализации адреса
-        row.createCell(18).setCellValue(cleanAddress.getOriginalAddress()); // Оригинальные адрес одной строкой
+        row.createCell(0).setCellValue(validateResponse.getId()); // Идентификатор записи
+//        row.createCell(1).setCellValue(cleanAddress.getAddressType()); // Тип адреса
+//        row.createCell(2).setCellValue(cleanAddress.getArea()); // Район
+//        row.createCell(3).setCellValue(cleanAddress.getRegion()); // Область, регион
+//        row.createCell(4).setCellValue(cleanAddress.getPlace()); // Населенный пункт
+//        row.createCell(5).setCellValue(cleanAddress.getLocation()); // Микрорайон
+//        row.createCell(6).setCellValue(cleanAddress.getStreet()); // Часть адреса: Улица
+//        row.createCell(7).setCellValue(cleanAddress.getHouse()); // Часть адреса: Номер здания
+//        row.createCell(8).setCellValue(cleanAddress.getBuilding()); // Часть здания: Строение
+//        row.createCell(9).setCellValue(cleanAddress.getCorpus()); // Часть здания: Корпус
+//        row.createCell(10).setCellValue(cleanAddress.getSlash()); // Часть здания: Дробь
+//        row.createCell(11).setCellValue(cleanAddress.getLetter()); // Часть здания: Литера
+//        row.createCell(12).setCellValue(cleanAddress.getRoom()); // Часть здания: Номер помещения
+//        row.createCell(13).setCellValue(cleanAddress.getIndex()); // Почтовый индекс
+//        row.createCell(14).setCellValue(cleanAddress.getHotel()); // Название гостиницы
+//        row.createCell(15).setCellValue(cleanAddress.getNumAddressType()); // Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта
+//        row.createCell(16).setCellValue(cleanAddress.getQualityCode()); // Код качества нормализации адреса
+//        row.createCell(17).setCellValue(cleanAddress.getValidationCode()); // Код проверки нормализации адреса
+//        row.createCell(18).setCellValue(cleanAddress.getOriginalAddress()); // Оригинальные адрес одной строкой
       }
 
       workbook.write(out);

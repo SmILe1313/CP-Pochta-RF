@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +24,11 @@ import org.apache.commons.csv.QuoteMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ru.smile.entities.AddrRequest;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
+import ru.smile.entities.ValidateRequest;
+import ru.smile.entities.ValidateResponse;
 import ru.smile.services.ExcelCsvService;
 import ru.smile.services.UserService;
 
@@ -39,33 +43,33 @@ public class CsvHelper {
     return TYPE.contains(file.getContentType());
   }
 
-  public List<ToCleanAddress> csvToCleanAddress(InputStream is, UserService userService) {
+  public List<ValidateRequest> csvToValidateRequest(InputStream is, UserService userService) {
     final CSVFormat format = CSVFormat.EXCEL.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim();//.withDelimiter(';');
 
     try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
          CSVParser csvParser = new CSVParser(fileReader,format);) {
 
-      List<ToCleanAddress> toCleanAddresses = new ArrayList<ToCleanAddress>();
+      List<ValidateRequest> validateRequestList = new ArrayList<ValidateRequest>();
 
       Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
       for (CSVRecord csvRecord : csvRecords) {
-        ToCleanAddress toCleanAddress = new ToCleanAddress(
+        ValidateRequest validateRequest = new ValidateRequest(
           Long.parseLong(csvRecord.get("Id")),
-          csvRecord.get("Address")
+          new ArrayList<>(Collections.singletonList(new AddrRequest(csvRecord.get("Address"))))
         );
 
-        toCleanAddress.setUserId(userService.getUserId());
-        toCleanAddresses.add(toCleanAddress);
+        validateRequest.setUserId(userService.getUserId());
+        validateRequestList.add(validateRequest);
       }
 
-      return toCleanAddresses;
+      return validateRequestList;
     } catch (IOException e) {
       throw new RuntimeException("Ошибка чтени CSV файла: " + e.getMessage());
     }
   }
 
-  public static ByteArrayInputStream cleanAddressToCSV(List<CleanAddress> cleanAddresses) {
+  public static ByteArrayInputStream validateResponseToCSV(List<ValidateResponse> validateResponseList) {
     final CSVFormat format = CSVFormat.EXCEL.withQuoteMode(QuoteMode.MINIMAL).withFirstRecordAsHeader();
 
     try (ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -73,27 +77,27 @@ public class CsvHelper {
 
       csvPrinter.printRecord((Object) ExcelCsvService.HEADERs);
 
-      for (CleanAddress cleanAddress : cleanAddresses) {
+      for (ValidateResponse validateResponse : validateResponseList) {
         List<String> data = Arrays.asList(
-          String.valueOf(cleanAddress.getId()), // Идентификатор записи
-          cleanAddress.getAddressType(), // Тип адреса
-          cleanAddress.getArea(), // Район
-          cleanAddress.getRegion(), // Область, регион
-          cleanAddress.getPlace(), // Населенный пункт
-          cleanAddress.getLocation(), // Микрорайон
-          cleanAddress.getStreet(), // Часть адреса: Улица
-          cleanAddress.getHouse(), // Часть адреса: Номер здания
-          cleanAddress.getBuilding(), // Часть здания: Строение
-          cleanAddress.getCorpus(), // Часть здания: Корпус
-          cleanAddress.getSlash(), // Часть здания: Дробь
-          cleanAddress.getLetter(), // Часть здания: Литера
-          cleanAddress.getRoom(), // Часть здания: Номер помещения
-          cleanAddress.getIndex(), // Почтовый индекс
-          cleanAddress.getHotel(), // Название гостиницы
-          cleanAddress.getNumAddressType(), // Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта
-          cleanAddress.getQualityCode(), // Код качества нормализации адреса
-          cleanAddress.getValidationCode(), // Код проверки нормализации адреса
-          cleanAddress.getOriginalAddress() // Оригинальные адрес одной строкой
+          String.valueOf(validateResponse.getId()) // Идентификатор записи
+//          cleanAddress.getAddressType(), // Тип адреса
+//          cleanAddress.getArea(), // Район
+//          cleanAddress.getRegion(), // Область, регион
+//          cleanAddress.getPlace(), // Населенный пункт
+//          cleanAddress.getLocation(), // Микрорайон
+//          cleanAddress.getStreet(), // Часть адреса: Улица
+//          cleanAddress.getHouse(), // Часть адреса: Номер здания
+//          cleanAddress.getBuilding(), // Часть здания: Строение
+//          cleanAddress.getCorpus(), // Часть здания: Корпус
+//          cleanAddress.getSlash(), // Часть здания: Дробь
+//          cleanAddress.getLetter(), // Часть здания: Литера
+//          cleanAddress.getRoom(), // Часть здания: Номер помещения
+//          cleanAddress.getIndex(), // Почтовый индекс
+//          cleanAddress.getHotel(), // Название гостиницы
+//          cleanAddress.getNumAddressType(), // Номер для а/я, войсковая часть, войсковая часть ЮЯ, полевая почта
+//          cleanAddress.getQualityCode(), // Код качества нормализации адреса
+//          cleanAddress.getValidationCode(), // Код проверки нормализации адреса
+//          cleanAddress.getOriginalAddress() // Оригинальные адрес одной строкой
         );
         csvPrinter.printRecord(data);
       }

@@ -8,38 +8,51 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
+import ru.smile.entities.ValidateRequest;
+import ru.smile.entities.ValidateResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** Нормализация адреса */
 @Service
-public class OtpravkaService {
+public class PochtaService {
 
-  private final static String apiLink = "https://otpravka-api.pochta.ru/1.0/clean/address";
-  private final static String accessToken = "";
-  private final static String userKey = "";
+  private final static String apiLink = "https://address.pochta.ru/validate/api/v7_1";
+  public final static String version = "demo";
+  public final static String reqId = "12204cb4-37fb-4059-91e6-c6e17e946d7f";
+  public final static String token = "53fb9daa-7f06-481f-aad6-c6a7a58ec0bb";
 
-  public List<CleanAddress> normalizeAddressApi(List<ToCleanAddress> toCleanAddresses) {
-    final RestTemplate restTemplate = new RestTemplate();
+  public List<ValidateResponse> normalizeAddressApi(List<ValidateRequest> validateRequestList) {
+    RestTemplate restTemplate = new RestTemplate();
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
-    headers.add("Authorization", "AccessToken " + accessToken );
-    headers.add("X-User-Authorization", "Basic " + userKey );
+    headers.add("AuthCode", token );
+//    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
+//    headers.add("X-User-Authorization", "Basic " + userKey );
+//    List<ValidateResponse> validateResponseList = new ArrayList<ValidateResponse>();
 
-    final HttpEntity<List<ToCleanAddress>> request = new HttpEntity<List<ToCleanAddress>>(toCleanAddresses,headers);
+      List<ValidateResponse> validateResponseList = validateRequestList.stream().map(validateRequest -> {
+      try {
+        HttpEntity<ValidateRequest> request = new HttpEntity<ValidateRequest>(validateRequest, headers);
 
-    final ResponseEntity<CleanAddress[]> response = restTemplate.postForEntity(apiLink, request, CleanAddress[].class);
-    CleanAddress[] cleanAddressesMassive = response.getBody();
-    List<CleanAddress> cleanAddresses = new ArrayList<CleanAddress>();
-    if (cleanAddressesMassive != null) {
-      cleanAddresses = Arrays.asList(cleanAddressesMassive);
-    }
-    return cleanAddresses;
+        ResponseEntity<ValidateResponse> response = restTemplate.postForEntity(apiLink, request, ValidateResponse.class);
+        ValidateResponse validateResponse = response.getBody();
+        return validateResponse;
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+        return new ValidateResponse();
+      }
+    }).collect(Collectors.toList());
+
+//    if (validateResponses != null) {
+//      validateResponseList = Arrays.asList(validateResponses);
+//    }
+    return validateResponseList;
   }
 
   // Для повторной нормализации построчно

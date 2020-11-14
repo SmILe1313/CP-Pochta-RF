@@ -13,7 +13,7 @@ import ru.smile.entities.CleanAddress;
 import ru.smile.entities.TestTodos;
 import ru.smile.entities.ToCleanAddress;
 import ru.smile.entities.User;
-import ru.smile.services.OtpravkaService;
+import ru.smile.services.PochtaService;
 import ru.smile.services.TestService;
 import ru.smile.services.UserService;
 
@@ -29,7 +29,7 @@ public class ApiController {
 
   @Autowired private UserService userService;
 
-  @Autowired private OtpravkaService otpravkaService;
+  @Autowired private PochtaService otpravkaService;
 
   @PostMapping("/normalizeByString")
   public ResponseEntity<List<CleanAddress>> normalaizeByString(@RequestBody List<String> originalAddress){

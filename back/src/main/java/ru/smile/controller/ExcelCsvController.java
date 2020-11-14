@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
+import ru.smile.entities.ValidateResponse;
 import ru.smile.services.ExcelCsvService;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
@@ -31,16 +32,16 @@ public class ExcelCsvController {
   @Autowired ExcelCsvService excelCsvService;
 
   @PostMapping("/clean/address")
-  public ResponseEntity<List<CleanAddress>> cleanFile(@RequestParam("files") MultipartFile file)  throws IOException {
+  public ResponseEntity<List<ValidateResponse>> cleanFile(@RequestParam("files") MultipartFile file)  throws IOException {
     String message = "";
 
     // Если файл xlsx
     if (ExcelHelper.hasExcelFormat(file)) {
       try {
-        List<CleanAddress> cleanAddresses = excelCsvService.saveAndNormalizeXlsx(file);
+        List<ValidateResponse> validateResponseList = excelCsvService.saveAndNormalizeXlsx(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
-        return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
+        return new ResponseEntity<>(validateResponseList, HttpStatus.OK);
 //        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
       } catch (Exception e) {
         message = "Невозможно загрузить xlsx-файл: " + file.getOriginalFilename() + "!";
@@ -52,10 +53,10 @@ public class ExcelCsvController {
     // Если файл csv
     if (CsvHelper.hasCSVFormat(file)) {
       try {
-        List<CleanAddress> cleanAddresses = excelCsvService.saveAndNormalizeCsv(file);
+        List<ValidateResponse> validateResponseList = excelCsvService.saveAndNormalizeCsv(file);
 
         message = "Файл успешно обработан: " + file.getOriginalFilename();
-        return new ResponseEntity<>(cleanAddresses, HttpStatus.OK);
+        return new ResponseEntity<>(validateResponseList, HttpStatus.OK);
       } catch (Exception e) {
         message = "Невозможно загрузить csv-файл: " + file.getOriginalFilename() + "!";
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);

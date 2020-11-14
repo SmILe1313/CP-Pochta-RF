@@ -16,7 +16,7 @@ import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ToCleanAddress;
 import ru.smile.entities.User;
 import ru.smile.services.CleanAddresService;
-import ru.smile.services.OtpravkaService;
+import ru.smile.services.PochtaService;
 import ru.smile.services.ToCleanAddresService;
 import ru.smile.services.UserService;
 
@@ -32,7 +32,8 @@ public class CrudController {
 
   @Autowired private ToCleanAddresService toCleanAddresService;
 
-  @Autowired OtpravkaService otpravkaService;
+  @Autowired
+  PochtaService otpravkaService;
 
   @GetMapping("/user/{id}") // get/
   public ResponseEntity<User> getUser(@PathVariable Long id){

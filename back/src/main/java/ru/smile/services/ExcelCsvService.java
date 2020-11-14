@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
-import ru.smile.entities.ToCleanAddress;
-import ru.smile.repositories.ToCleanAddressRepository;
+import ru.smile.entities.ValidateRequest;
+import ru.smile.entities.ValidateResponse;
+import ru.smile.repositories.AddrRequestRepository;
+import ru.smile.repositories.ValidateRequestRepository;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
 
@@ -18,11 +20,13 @@ import java.util.List;
 @Transactional
 public class ExcelCsvService {
 
-  @Autowired ToCleanAddressRepository toCleanAddressRepository;
+  @Autowired ValidateRequestRepository validateRequestRepository;
 
-  @Autowired CleanAddresService cleanAddresessService;
+  @Autowired AddrRequestRepository addrRequestRepository;
 
-  @Autowired OtpravkaService otpravkaService;
+  @Autowired ValidateResponseService validateResponseService;
+
+  @Autowired PochtaService pochtaService;
 
   @Autowired ExcelHelper excelHelper;
 
@@ -38,27 +42,32 @@ public class ExcelCsvService {
     "Код качества нормализации адреса", "Код проверки нормализации адреса",
     "Оригинальные адрес одной строкой"};
 
-  public List<CleanAddress> saveAndNormalizeXlsx(MultipartFile file) {
+  public List<ValidateResponse> saveAndNormalizeXlsx(MultipartFile file) {
     try {
-      List<ToCleanAddress> toCleanAddresses = excelHelper.excelToCleanAddress(file.getInputStream(), userService);
-      toCleanAddressRepository.saveAll(toCleanAddresses);
-//      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
-//      cleanAddresessService.saveList(cleanAddresses);
-      List<CleanAddress> cleanAddresses = cleanAddresessService.getWithErrors();
-      return cleanAddresses;
-    } catch (IOException e) {
+      List<ValidateRequest> validateRequestList = excelHelper.excelToValidateRequest(file.getInputStream(), userService);
+      validateRequestList.forEach(validateRequest -> addrRequestRepository.saveAll(validateRequest.getAddr()));
+      validateRequestRepository.saveAll(validateRequestList);
+
+      List<ValidateResponse> validateResponseList = pochtaService.normalizeAddressApi(validateRequestList);
+      validateResponseService.saveList(validateResponseList);
+
+      List<ValidateResponse> validateResponseListWithErrors = validateResponseService.getWithErrors();
+      return validateResponseListWithErrors;
+    } catch (Exception e) {
       throw new RuntimeException("Ошибка чтения xlsx-файла: " + e.getMessage());
     }
   }
 
-  public List<CleanAddress> saveAndNormalizeCsv(MultipartFile file) {
+  public List<ValidateResponse> saveAndNormalizeCsv(MultipartFile file) {
     try {
-      List<ToCleanAddress> toCleanAddresses = csvHelper.csvToCleanAddress(file.getInputStream(), userService);
-      toCleanAddressRepository.saveAll(toCleanAddresses);
-//      List<CleanAddress> cleanAddresses = otpravkaService.normalizeAddressApi(toCleanAddresses);
-//      cleanAddresessService.saveList(cleanAddresses);
-      List<CleanAddress> cleanAddresses = cleanAddresessService.getWithErrors();
-      return cleanAddresses;
+      List<ValidateRequest> validateRequestList = csvHelper.csvToValidateRequest(file.getInputStream(), userService);
+      validateRequestRepository.saveAll(validateRequestList);
+
+      List<ValidateResponse> validateResponseList = pochtaService.normalizeAddressApi(validateRequestList);
+      validateResponseService.saveList(validateResponseList);
+
+      List<ValidateResponse> validateResponseListWithErrors = validateResponseService.getWithErrors();
+      return validateResponseListWithErrors;
     } catch (IOException e) {
       throw new RuntimeException("Ошибка чтения csv-файла: " + e.getMessage());
     }
@@ -66,24 +75,24 @@ public class ExcelCsvService {
 
   // Скачать XLSX
   public ByteArrayInputStream downloadFileXlsx() {
-    List<CleanAddress> cleanAddresses = cleanAddresessService.getWithoutErrors();
+    List<ValidateResponse> validateResponseList = validateResponseService.getWithoutErrors();
 
-    ByteArrayInputStream in = ExcelHelper.cleanAddressToExcel(cleanAddresses);
+    ByteArrayInputStream in = ExcelHelper.validateResponseToExcel(validateResponseList);
     return in;
   }
 
   // Скачать CSV
   public ByteArrayInputStream downloadFileCsv() {
-    List<CleanAddress> cleanAddresses = cleanAddresessService.getWithoutErrors();
+    List<ValidateResponse> validateResponseList = validateResponseService.getWithoutErrors();
 
-    ByteArrayInputStream in = CsvHelper.cleanAddressToCSV(cleanAddresses);
+    ByteArrayInputStream in = CsvHelper.validateResponseToCSV(validateResponseList);
     return in;
   }
 
 
 
-  public List<CleanAddress> getAllCleanAddresses() {
-    return cleanAddresessService.getAll();
+  public List<ValidateResponse> getAllValidateResponses() {
+    return validateResponseService.getAll();
   }
 }
 
