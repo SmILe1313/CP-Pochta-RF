@@ -1,19 +1,24 @@
 <template>
 	<div class="fullscreen">
-
+		
 		<div
 				class="dropzone"
 				:class="{ 'draghover': dragHover,
 									'ready': showDropZone }"
 				@drop.prevent="handleDrop"
         @dragenter.stop="handleDragOver"
-        @dragleave.stop="handleDragLeave"
+        @dragleave.prevent
         @dragover.prevent>
 
 				<div class="dropzone-white">
-					<div class="drop-border">
+					<label class="drop-border">
 						<div class="drop-mark">Положите файл сюда</div>
-					</div>
+						<input  type="file"
+								ref="fileInput"
+								accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+								hidden
+								@change="uploadFile"/>
+					</label>
 
 				</div>
 				<div class="dropzone-blue">
@@ -67,9 +72,9 @@ export default {
 		handleDragOver () {
       this.dragHover = true
     },
-    handleDragLeave () {
-			this.dragHover = false
-		},
+    // handleDragLeave () {
+		// 	this.dragHover = false
+		// },
 		
     handleDrop (e) {
 			this.dragHover = false
@@ -86,10 +91,17 @@ export default {
 				})
         .then(() => {
           setTimeout(() => {
-            this.loading = false
+						this.loading = false
+						this.$emit('uploaded')
           }, 1000)
         })
-    }
+		},
+		// загрузка через input
+		uploadFile (e) {
+			const [file] = [...e.target.files]
+			this.file.data = file
+			this.upload()
+		}
 	},
 	components: {
 	}
@@ -124,6 +136,9 @@ export default {
 		min-width 300px
 		height 100%
 		pointer-events none
+		&:hover
+			.drop-border
+				transform scale(1.1)
 		.drop-border
 			padding 10px
 			margin auto
@@ -144,6 +159,8 @@ export default {
 				background linear-gradient(263.82deg, #0064C5 4.04%, #004C9B 95.62%)
 				border-radius 4px
 				color white
+				pointer-events all
+				cursor pointer
 
 	.dropzone-blue
 		display flex
@@ -153,7 +170,6 @@ export default {
 		box-shadow 0px 0px 30px rgba(0, 0, 0, 0.1)
 		height 100%
 		color white
-		pointer-events none
 		.drop-description
 			margin auto
 			display flex

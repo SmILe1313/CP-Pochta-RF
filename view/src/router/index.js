@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Main from '../views/Main.vue'
+import Preview from '../views/Preview.vue'
 // import Home from '../views/Home.vue'
 // import Handler from '../views/Handler.vue'
 
@@ -18,6 +19,11 @@ const routes = [
     name: 'Login',
     component: Login
   },
+  {
+    path: '/preview',
+    name: 'Preview',
+    component: Preview
+  }
   // {
   //   path: '/handle',
   //   name: 'Handler',

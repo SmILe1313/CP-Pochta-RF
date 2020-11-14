@@ -1,13 +1,13 @@
 <template>
   <b-container fluid class="h-100">
-    <pHeader />
-    <pUploader @uploaded="showPreview"/>
+    <pHeader/>
+    <pPreview/>
     <pFooter/>
   </b-container>
 </template>
 <script>
 import pHeader from '@/components/p-header'
-import pUploader from '@/components/p-uploader'
+import pPreview from '@/components/p-preview'
 import pFooter from '@/components/p-footer'
 export default {
   data () {
@@ -15,15 +15,12 @@ export default {
     }
   },
   methods: {
-    showPreview () {
-      this.$router.push('/preview')
-    }
   },
   computed: {
   },
   components: {
     pHeader,
-    pUploader,
+    pPreview,
     pFooter
 	}
 }

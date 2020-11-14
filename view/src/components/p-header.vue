@@ -1,13 +1,11 @@
 <template>
-  <b-container fluid>
-    <b-container class="mt-3">
-      <b-row align-v="center" align-h="between">
+  <header class="mt-3">
+    <div class="header-info">
         <logo class="login-logo"/>
         <b-link href="#/help" class="text-theme-blue"><b-icon-question-circle size="sm"/> Помощь </b-link>
-      </b-row>
-    </b-container>
+    </div>
     <hr/>
-  </b-container>
+  </header>
 </template>
 
 <script>
@@ -18,3 +16,22 @@ export default {
 	}
 }
 </script>
+
+<style lang="stylus" scoped>
+header
+  display flex
+  flex-direction column
+  align-items center
+  flex 1
+  margin-left -15px
+  margin-right -15px
+  .header-info
+    display flex
+    justify-content space-between
+    align-items center
+    width 60%
+
+  hr
+    width 100%
+
+</style>
