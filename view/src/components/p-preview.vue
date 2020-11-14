@@ -45,6 +45,21 @@ import VueChartist from 'v-chartist'
 import Chartist from 'chartist'
 import pRowsPreview from './p-rows-preview'
 
+const elementFields = {
+  C: { name: 'County', 'tname': 'Страна', content: 'C', val: '' },
+  R: { name: 'Region', 'tname': 'Регион', content: 'R', val: '' },
+  A: { name: 'Area', 'tname': 'Район', content: 'A', val: '' },
+  P: { name: 'Place', 'tname': 'Населенный пункт', content: 'P', val: '' },
+  T: { name: 'Territory', 'tname': 'Область', content: 'T', val: '' },
+  S: { name: 'Street', 'tname': 'Улица', content: 'S', val: '' },
+  N: { name: 'Number', 'tname': 'Дом', content: 'N', val: '' },
+  L: { name: 'Letter', 'tname': 'Литера', content: 'L', val: '' },
+  D: { name: 'Delimiter', 'tname': 'Дробь', content: 'D', val: '' },
+  E: { name: 'External', 'tname': 'Корпус', content: 'E', val: '' },
+  B: { name: 'Building', 'tname': 'Строение', content: 'B', val: '' },
+  F: { name: 'Flat', 'tname': 'Помещение', content: 'F', val: '' }
+}
+
 export default {
   props: {
     total: String,
@@ -117,7 +132,22 @@ export default {
     },
     getAll () {
       return this.$bs.getCleanAddresses()
-        .then(data => { this.addresses = data.map(item => ({ ...item, expanded: false })) })
+        .then(data => { this.addresses = data.map(item => {
+          const elementsContent = item.addr.element.map(el => el.content)
+          const elementToAdd = Object.values(elementFields).filter(field => !elementsContent.includes(field.content)).map(field => ({ ...field }))
+          const fio = (item.fio || {}).fullName || ''
+          const index = item.addr.index
+          return {
+            ...item,
+            _elements: [
+              ...item.addr.element,
+              ...elementToAdd
+            ],
+            _info: { fio, index },
+            expanded: false 
+          }
+          })
+        })
     },
     // Скачиваем файл
     download (type = 'xlsx') {

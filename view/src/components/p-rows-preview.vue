@@ -19,26 +19,35 @@
             <b-form class="pb-4">
               <!-- Поля общие -->
               <b-form-row>
-                <b-col v-for="uField in userFields" :key="uField" class="my-2">
-                  <label :for="uField">ФИО</label>
+                <b-col key="fio" class="my-2">
+                  <label for="fio">ФИО</label>
                   <b-form-input
                     class="inp-theme-blue"
-                    :id="uField"
+                    id="fio"
                     type="text"
-                    v-model="(address.fio || {})[uField]"
+                    v-model="address._info.fio"
+                    @input="changeStatus(address)"/>
+                </b-col>
+                <b-col key="index" class="my-2">
+                  <label for="index">Индекс</label>
+                  <b-form-input
+                    class="inp-theme-blue"
+                    id="index"
+                    type="text"
+                    v-model="address._info.index"
                     @input="changeStatus(address)"/>
                 </b-col>
               </b-form-row>
 
               <b-form-row>
-                <b-col v-for="(elField, key) in elementFields" :key="elField.name" class="my-2" cols="3">
-                <label :for="elField.name">{{ elField.label }}</label>
+                <b-col v-for="element in address._elements" :key="element.content" class="my-2" cols="4">
+                <label :for="element.content">{{ element.content === 'C' ? 'Страна' : element.tname }}</label>
                 <b-form-input
                     class="inp-theme-blue"
-                    :id="elField.name"
+                    :id="element.content"
                     type="text"
-                    :placeholder="'Введите ' + elField.label.toLowerCase()"
-                    v-model="(address.addr.element[getelId(address.addr.element, key)] || {}).val"
+                    :placeholder="element.tname ? 'Введите ' + element.tname.toLowerCase() : ''"
+                    v-model="element.val"
                     @input="changeStatus(address)"/>
 
                 </b-col>
@@ -69,21 +78,6 @@ const SYSTEM_FIELDS = {
 import { fieldsByGroup, fieldsToEdit } from '@/data/fields'
 import collapse from './accordion'
 
-const userFields = ['fullname']
-const elementFields = {
-  C: { name: 'County', 'label': 'Страна' },
-  R: { name: 'Region', 'label': 'Регион' },
-  A: { name: 'Area', 'label': 'Район' },
-  P: { name: 'Place', 'label': 'Населенный пункт' },
-  T: { name: 'Territory', 'label': 'Область' },
-  S: { name: 'Street', 'label': 'Улица' },
-  N: { name: 'Number', 'label': 'Дом' },
-  L: { name: 'Letter', 'label': 'Литера' },
-  D: { name: 'Delimiter', 'label': 'Дробь' },
-  E: { name: 'External', 'label': 'Корпус' },
-  B: { name: 'Building', 'label': 'Строение' },
-  F: { name: 'Flat', 'label': 'Помещение' }
-}
 export default {
   props: {
     data: {
@@ -93,22 +87,16 @@ export default {
   },
   data () {
     return {
-      userFields: userFields,
-      elementFields: elementFields,
       groups: fieldsByGroup,
       addresses: this.data.map(address => ({ ...address, ...SYSTEM_FIELDS }))
     }
   },
   watch: {
     data (to) {
-      this.addresses = this.data.map(address => ({ ...address, ...SYSTEM_FIELDS }))
+      this.addresses = to.map(address => ({ ...address, ...SYSTEM_FIELDS }))
     }
   },
   methods: {
-    getelId(elements, key) {
-      const index = elements.findIndex(el => el.content === key)
-      return index
-    },
     expand (address) {
       address.expanded = !address.expanded
     },
@@ -117,12 +105,26 @@ export default {
     },
     // Сохряем одиночную запись
     save (address) {
+      const addressOrderKeys = ['C', 'R', 'A', 'P', 'T', 'S', 'N', 'L', 'D', 'E', 'B', 'F']
+      const index = address._info.index ? address._info.index + ', ' : ''
+      const addressFilled = address._elements.filter(field => field.val)
+      const addressString = addressOrderKeys.reduce((acc, key) => {
+        let field = addressFilled.find(field => field.content === key)
+        if (field && field.val) {
+          return [...acc, field.val]
+        }
+        return acc
+      }, [])
+      const data = {
+        id: address.id,
+        addr: index ? index + [addressString].join(',') : [addressString].join(',')
+      }
       address._saving = true
       const clearSaving = () => setTimeout(() => {
         address._saving = false
         address._changed = false
       }, 1500)
-      return this.$bs.updateAsync(address, address.id)
+      return this.$bs.updateAsync(data, address.id)
         .then(resp => {
             address._saved = true
             console.log('saved')
