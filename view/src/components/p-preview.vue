@@ -11,6 +11,20 @@
         </div>
       </div>
     </div>
+    <br>
+    <div class="main-layout">
+      <b-button-group>
+          <b-button class="btn-theme-blue"
+                    size="md"
+                    @click="download()">
+                    <b-icon-arrow-down-circle class="mr-2"/>Выгрузить
+          </b-button>
+          <b-dropdown right class="btn-theme-blue">
+            <b-dropdown-item @click="download('xlsx')">.xlsx</b-dropdown-item>
+            <b-dropdown-item @click="download('csv')">.csv</b-dropdown-item>
+          </b-dropdown>
+        </b-button-group>
+    </div>
 	</div>
 </template>
 
@@ -56,7 +70,7 @@ export default {
       legend: ['Распознано', 'Не распознано', 'Частично распознано'],
       total: 325,
       data: {
-        series: [300, 20, 5]
+        series: [232, 88, 5]
       },
       options: {
         height: '400px',
@@ -75,6 +89,10 @@ export default {
       return this.$bs.getCleanAddressesWithErrors()
         .then(data => { this.addressesWithError = data || [] })
     },
+    // Скачиваем файл
+    download (type = 'xlsx') {
+      this.$bs.downloadCleanAddresses(type)
+    }
 	},
 	components: {
     'vue-chartist': VueChartist
@@ -111,7 +129,8 @@ export default {
 <style  lang="stylus" scoped>
 .fullscreen
   display flex
-  justify-content center
+  flex-direction column
+  align-items center
   min-height 80vh
 
 .main-layout

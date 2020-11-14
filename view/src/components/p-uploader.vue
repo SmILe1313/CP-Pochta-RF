@@ -13,8 +13,8 @@
 				<div class="dropzone-white">
 					<label class="drop-border">
 						<div class="drop-mark">Положите файл сюда</div>
-						<input  type="file"
-								ref="fileInput"
+						<input type="file"
+								id="file"
 								accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
 								hidden
 								@change="uploadFile"/>
@@ -23,7 +23,7 @@
 				</div>
 				<div class="dropzone-blue">
 					<div class="drop-description">
-						<h4><b-icon-file-earmark-plus/> Загрузите файл </h4>
+						<label for="file"><h4><b-icon-file-earmark-plus/> Загрузите файл </h4></label>
 						<div class="drop-devider"><span/> <p>или</p> <span/></div>
 						<b-form-input
 							size="lg"
@@ -180,6 +180,10 @@ export default {
 			min-height 150px
 			width 70%
 			height 50%
+			label
+				&:hover
+					opacity .8
+					cursor pointer
 		.drop-devider
 			display flex
 			width 100%

@@ -46,9 +46,9 @@
 				</b-row>
 			</b-row>
 
-			<b-row align-h="center">
+			<!-- <b-row align-h="center">
 				<b-link href="#/help" class="text-theme-blue p-4"><esia/> Войти через Госуслуги </b-link>
-			</b-row>
+			</b-row> -->
 
 		</b-container>
 		<pFooter/>
