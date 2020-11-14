@@ -12,12 +12,12 @@
 
 				<div class="dropzone-white">
 					<label class="drop-border">
-						<div class="drop-mark">Положите файл сюда</div>
+						<div class="drop-mark" :class="{ 'filled': file.data }">{{ fileName }}</div>
 						<input type="file"
 								id="file"
 								accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
 								hidden
-								@change="uploadFile"/>
+								@change="setFile"/>
 					</label>
 
 				</div>
@@ -30,11 +30,17 @@
 							class="inp-theme-whiteblue"
 							v-model="file.link"
 							type="text"
-							placeholder="Вставьте URL"
-							@change="upload()"/>
+							placeholder="Вставьте URL"/>
 					</div>
 				</div>
 		</div>
+		<b-row align-h="center">
+				<b-button size="lg"
+						class="btn-theme-blue m-5 py-3 px-4"
+						@click="upload()">
+						Продолжить
+				</b-button>
+		</b-row>
 		</b-overlay>
 	</div>
 </template>
@@ -101,11 +107,14 @@ export default {
           }, 1000)
 				})
 		},
-		// загрузка через input
-		uploadFile (e) {
+		setFile (e) {
 			const [file] = [...e.target.files]
 			this.file.data = file
-			this.upload()
+		}
+	},
+	computed: {
+		fileName () {
+			return (this.file.data || {}).name || 'Положите файл сюда'
 		}
 	},
 	components: {
@@ -120,6 +129,7 @@ export default {
 
 .overlay-layout
 	display flex
+	flex-direction column
 	margin auto
 
 .dropzone
@@ -165,11 +175,16 @@ export default {
 				align-items center
 				width 100%
 				height 100%
-				background linear-gradient(263.82deg, #0064C5 4.04%, #004C9B 95.62%)
+				background none
 				border-radius 4px
-				color white
+				color gray
+				font-weight 500
 				pointer-events all
 				cursor pointer
+				transition background .15s ease, color .15s ease
+				&.filled
+					background linear-gradient(263.82deg, #0064C5 4.04%, #004C9B 95.62%)
+					color white
 
 	.dropzone-blue
 		display flex
