@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smile.entities.ValidateResponse;
+import ru.smile.entities.ValidateResponseCounts;
 import ru.smile.repositories.AddrResponseRepository;
 import ru.smile.repositories.ElementRepository;
 import ru.smile.repositories.FioRepository;
@@ -11,6 +12,7 @@ import ru.smile.repositories.IndexRepository;
 import ru.smile.repositories.ValidateResponseRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -25,6 +27,16 @@ public class ValidateResponseService {
   @Autowired AddrResponseRepository addrResponseRepository;
 
   @Autowired ElementRepository elementRepository;
+
+  private static UUID responseUuid;
+
+  public static UUID getResponseUuid() {
+    return responseUuid;
+  }
+
+  public static void setResponseUuid(UUID responseUuid) {
+    ValidateResponseService.responseUuid = responseUuid;
+  }
 
   public ValidateResponse create(ValidateResponse entity) {
     return repo.save(entity);
@@ -45,20 +57,42 @@ public class ValidateResponseService {
   }
 
   public List<ValidateResponse> getAll() {
-    return (List<ValidateResponse>) repo.findAll();
+    return (List<ValidateResponse>) repo.findByResponseUuid(getResponseUuid());
   }
 
-  // Нормализицая с ошибками
-  public List<ValidateResponse> getWithErrors() {
-    return (List<ValidateResponse>) repo.findAll();
-//    return (List<ValidateResponse>) repo.findByQualityCodeNotInOrValidationCodeNotIn(goodQuality, goodValidation);
+  // Доставочные
+  public List<ValidateResponse> getGood() {
+    return (List<ValidateResponse>) repo.findByAddrDeliveryAndResponseUuid(0, getResponseUuid());
+  }
+  public Long getCountGood() {
+    return repo.countByAddrDeliveryAndResponseUuid(0, getResponseUuid());
   }
 
-  // Нормализицая без ошибок
-  public List<ValidateResponse> getWithoutErrors() {
-    return (List<ValidateResponse>) repo.findAll();
-//    return (List<ValidateResponse>) repo.findByQualityCodeInAndValidationCodeIn(goodQuality, goodValidation);
+  // Требуют уточнения
+  public List<ValidateResponse> getMiddle() {
+    return (List<ValidateResponse>) repo.findByAddrDeliveryAndResponseUuid(1, getResponseUuid());
   }
+  public Long getCountMiddle() {
+    return repo.countByAddrDeliveryAndResponseUuid(1, getResponseUuid());
+  }
+
+  // Плохие
+  public List<ValidateResponse> getBad() {
+    return (List<ValidateResponse>) repo.findByAddrDeliveryAndResponseUuid(2, getResponseUuid());
+  }
+  public Long getCountBad() {
+    return repo.countByAddrDeliveryAndResponseUuid(2, getResponseUuid());
+  }
+
+  // Количество
+  public ValidateResponseCounts getCounts() {
+    return new ValidateResponseCounts(
+      getCountGood(),
+      getCountMiddle(),
+      getCountBad()
+    );
+  }
+
 
   public ValidateResponse get(Long id) {
     return repo.findById(id).get();

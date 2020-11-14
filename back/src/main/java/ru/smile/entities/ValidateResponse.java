@@ -10,12 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.UUID;
 
 /** Ответ
  *
@@ -78,13 +75,11 @@ import java.util.Set;
 @Table(name = "validate_response")
 public class ValidateResponse {
 
-//  @JsonIgnore
-//  public final static Set<String> goodQuality = new HashSet<>(Arrays.asList("GOOD", "POSTAL_BOX", "ON_DEMAND", "UNDEF_05"));
-//  @JsonIgnore
-//  public final static Set<String> goodValidation = new HashSet<>(Arrays.asList("VALIDATED", "OVERRIDDEN", "CONFIRMED_MANUALLY"));
-
   @JsonIgnore
   private Long userId;
+
+  @JsonIgnore
+  private UUID responseUuid;
 
   @Id
   @SequenceGenerator(name = "validateResponseIdSeq", sequenceName = "validate_response_id_seq", allocationSize = 1)
@@ -97,10 +92,10 @@ public class ValidateResponse {
   @ManyToOne(fetch = FetchType.EAGER)
   private Fio fio;
 
- @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.EAGER)
   private Index index;
 
- @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.EAGER)
   private AddrResponse addr;
 
   public ValidateResponse() {
@@ -170,13 +165,11 @@ public class ValidateResponse {
     this.addr = addr;
   }
 
-//  //  @JsonIgnore
-//  public Boolean isGoodQuality () {
-//    return goodQuality.contains(this.qualityCode);
-//  }
-////  @JsonIgnore
-//  public Boolean isValidationQuality () {
-//    return goodValidation.contains(this.validationCode);
-//  }
+  public UUID getResponseUuid() {
+    return responseUuid;
+  }
 
+  public void setResponseUuid(UUID responseUuid) {
+    this.responseUuid = responseUuid;
+  }
 }

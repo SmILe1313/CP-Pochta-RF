@@ -3,15 +3,12 @@ package ru.smile.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.UUID;
 
 /** Запрос
  *  -------------
@@ -38,14 +35,15 @@ import java.util.List;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-//@Table(name = "validate_request")
 public class ValidateRequest {
 
   @JsonIgnore
   private Long userId;
 
+//  @JsonIgnore
+//  private UUID requestUUID;
+
   @Id
-//  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String version;
@@ -61,8 +59,7 @@ public class ValidateRequest {
   private Long historical;
 
   @OneToMany
-//  @ElementCollection
-  private List<AddrRequest> addr;// = new ArrayList<AddrRequest>();
+  private List<AddrRequest> addr;
 
   public ValidateRequest() {
   }
@@ -198,4 +195,13 @@ public class ValidateRequest {
   public void setAddr(List<AddrRequest> addr) {
     this.addr = addr;
   }
+
+//  public UUID getRequestUUID() {
+//    return UUID.randomUUID();
+//  }
+//
+//  public void setRequestUUID(UUID requestUUID) {
+//    this.requestUUID = requestUUID;
+//  }
+
 }

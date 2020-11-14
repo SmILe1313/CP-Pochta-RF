@@ -12,9 +12,8 @@ import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /** Нормализация адреса */
@@ -36,12 +35,15 @@ public class PochtaService {
 //    headers.add("X-User-Authorization", "Basic " + userKey );
 //    List<ValidateResponse> validateResponseList = new ArrayList<ValidateResponse>();
 
+      UUID newResponseUUID = getResponseUUID();
       List<ValidateResponse> validateResponseList = validateRequestList.stream().map(validateRequest -> {
       try {
         HttpEntity<ValidateRequest> request = new HttpEntity<ValidateRequest>(validateRequest, headers);
 
         ResponseEntity<ValidateResponse> response = restTemplate.postForEntity(apiLink, request, ValidateResponse.class);
         ValidateResponse validateResponse = response.getBody();
+        ValidateResponseService.setResponseUuid(newResponseUUID);
+        validateResponse.setResponseUuid(newResponseUUID);
         return validateResponse;
       } catch (Exception e) {
         System.out.println(e.getMessage());
@@ -49,9 +51,6 @@ public class PochtaService {
       }
     }).collect(Collectors.toList());
 
-//    if (validateResponses != null) {
-//      validateResponseList = Arrays.asList(validateResponses);
-//    }
     return validateResponseList;
   }
 
@@ -73,6 +72,10 @@ public class PochtaService {
       cleanAddress = new CleanAddress(toCleanAddress.getId());
     }
     return cleanAddress;
+  }
+
+  public UUID getResponseUUID() {
+    return UUID.randomUUID();
   }
 
   // Обратно в одну строку

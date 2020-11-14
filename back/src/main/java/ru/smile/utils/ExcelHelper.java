@@ -135,7 +135,16 @@ public class ExcelHelper {
       for (ValidateResponse validateResponse : validateResponseList) {
         Row row = sheet.createRow(rowIdx++);
 
-        row.createCell(0).setCellValue(validateResponse.getId()); // Идентификатор записи
+        String outAddr = "";
+        String inAddr = "";
+        if (validateResponse.getAddr() != null) {
+          outAddr = validateResponse.getAddr().getOutaddr() != null ? validateResponse.getAddr().getOutaddr() : "";
+          inAddr = validateResponse.getAddr().getInaddr() != null ? validateResponse.getAddr().getInaddr() : "";
+        }
+//        row.createCell(0).setCellValue(validateResponse.getId()); // Идентификатор записи
+        row.createCell(0).setCellValue(inAddr); // "Первоначальный адрес одной строкой"
+        row.createCell(1).setCellValue(outAddr); // "Найденный адрес одной строкой"
+
 //        row.createCell(1).setCellValue(cleanAddress.getAddressType()); // Тип адреса
 //        row.createCell(2).setCellValue(cleanAddress.getArea()); // Район
 //        row.createCell(3).setCellValue(cleanAddress.getRegion()); // Область, регион

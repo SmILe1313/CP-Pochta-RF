@@ -105,8 +105,8 @@ const bs = {
 
   // Скачать нормализованный эксель-файл в виде xlsx/csv
   downloadCleanAddresses (type, delivery) {
-    const query = delivery ? '?delivery=' + delivery : ''
-    return this.getExeclDataAsync(backLink + apiExcel + '/download/' + type + query)
+    // const query = delivery ? '?delivery=' + delivery : ''
+    return this.getExeclDataAsync(backLink + apiExcel + '/download/' + type + '/' + delivery)
       .then(resp => {
         const blob = new Blob([resp], { type:'application/vnd.ms-excel '})
         let link = document.createElement('a')
