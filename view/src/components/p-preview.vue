@@ -18,13 +18,9 @@
       </div>
     </div>
     <br>
+    <!-- Строки -->
     <div class="section">
-      <div class="adresses">
-        <div v-for="address in addressesFiltered" :key="address.addr.guid" 
-            class="address"
-            :class="{ 'expanded': address.expanded }"
-            @click="expand(address)">{{address.addr.outaddr}}</div>
-      </div>
+      <pRowsPreview :data="addressesFiltered"/>
     </div>
     <br>
     <div class="section">
@@ -46,6 +42,8 @@
 <script>
 import VueChartist from 'v-chartist'
 import Chartist from 'chartist'
+import pRowsPreview from './p-rows-preview'
+
 export default {
   props: {
     total: String,
@@ -113,9 +111,6 @@ export default {
     this.getAll()
 	},
   methods: {
-    expand (address) {
-      address.expanded = !address.expanded
-    },
     setFilter (filter) {
       this.filters.forEach(f => (f.active = f.name === filter.name))
     },
@@ -150,7 +145,8 @@ export default {
     }
   },
 	components: {
-    'vue-chartist': VueChartist
+    'vue-chartist': VueChartist,
+    pRowsPreview
 	}
 }
 </script>
