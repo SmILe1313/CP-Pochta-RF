@@ -42,16 +42,15 @@ public class ValidateSimpleRequest {
   private Long userId;
 
   @Id
-//  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  //  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
- @ManyToOne(fetch = FetchType.EAGER)
-  private AddrRequest addr;
+  private String addr;
 
   public ValidateSimpleRequest() {
   }
 
-  public ValidateSimpleRequest(Long id, AddrRequest addr) {
+  public ValidateSimpleRequest(Long id, String addr) {
     this.id = id;
     this.addr = addr;
   }
@@ -72,11 +71,11 @@ public class ValidateSimpleRequest {
     this.id = id;
   }
 
-  public AddrRequest getAddr() {
+  public String getAddr() {
     return addr;
   }
 
-  public void setAddr(AddrRequest addr) {
+  public void setAddr(String addr) {
     this.addr = addr;
   }
 }

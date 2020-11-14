@@ -3,14 +3,19 @@ package ru.smile.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.smile.entities.AddrRequest;
+import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
 import ru.smile.entities.ValidateResponseCounts;
+import ru.smile.entities.ValidateSimpleRequest;
 import ru.smile.repositories.AddrResponseRepository;
 import ru.smile.repositories.ElementRepository;
 import ru.smile.repositories.FioRepository;
 import ru.smile.repositories.IndexRepository;
 import ru.smile.repositories.ValidateResponseRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -114,6 +119,11 @@ public class ValidateResponseService {
       }
     });
     return repo.saveAll(validateResponseList);
+  }
+
+  public ValidateRequest toStandartRequest (ValidateSimpleRequest validateSimpleRequest) {
+    List<AddrRequest> addrRequestList = new ArrayList<>(Collections.singletonList(new AddrRequest(validateSimpleRequest.getAddr())));
+    return new ValidateRequest(validateSimpleRequest.getId(), addrRequestList);
   }
 
 }
