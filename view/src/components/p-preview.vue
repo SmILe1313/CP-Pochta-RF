@@ -60,7 +60,7 @@ export default {
         { name: 'Распознано', active: false, delivery: 0, filter: ({addr}) => (addr.delivery === 0) },
         { name: 'Не распознано', active: false, delivery: 2, filter: ({addr}) => (addr.delivery === 2) },
         { name: 'Частично распознано', active: true, delivery: 1, filter: ({addr}) => (addr.delivery === 1) },
-        { name: 'Все', active: false, filter: () => { return true } }
+        { name: 'Все', active: false, delivery: -1, filter: () => { return true } }
       ],
       listener: {
         draw (data) {
