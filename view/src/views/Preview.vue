@@ -1,7 +1,7 @@
 <template>
   <b-container fluid class="h-100">
     <pHeader/>
-    <pPreview/>
+    <pPreview v-bind="{ total, done, errors, verify }"/>
     <pFooter/>
   </b-container>
 </template>
@@ -10,13 +10,11 @@ import pHeader from '@/components/p-header'
 import pPreview from '@/components/p-preview'
 import pFooter from '@/components/p-footer'
 export default {
-  data () {
-    return {
-    }
-  },
-  methods: {
-  },
-  computed: {
+  props: {
+    total: String,
+    done: String,
+    errors: String,
+    verify: String
   },
   components: {
     pHeader,

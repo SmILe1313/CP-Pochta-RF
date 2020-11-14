@@ -15,8 +15,8 @@ export default {
     }
   },
   methods: {
-    showPreview () {
-      this.$router.push('/preview')
+    showPreview (data) {
+      this.$router.push({ path: 'preview', query: { ...data } })
     }
   },
   computed: {

@@ -22,7 +22,13 @@ const routes = [
   {
     path: '/preview',
     name: 'Preview',
-    component: Preview
+    component: Preview,
+    props: (route) => ({
+      done: route.query.done,
+      total: route.query.total,
+      errors: route.query.errors,
+      verify: route.query.verify
+    })
   }
   // {
   //   path: '/handle',

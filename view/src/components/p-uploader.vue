@@ -86,15 +86,19 @@ export default {
 		upload () {
       this.loading = true
       this.$bs.uploadFileAsync(this.file)
-        .then(() => {
-					console.log('Файл загружен')
-				})
-        .then(() => {
-          setTimeout(() => {
+        .then(({ bad, good, middle, total }) => {
+					this.$root.fileName = this.file.data.name
+					const counts = {
+						total,
+						done: good,
+						errors: bad,
+						verify: middle
+					}
+					setTimeout(() => {
 						this.loading = false
-						this.$emit('uploaded')
+						this.$emit('uploaded', counts)
           }, 1000)
-        })
+				})
 		},
 		// загрузка через input
 		uploadFile (e) {
@@ -189,12 +193,14 @@ export default {
 			width 100%
 			justify-content center
 			align-items center
+			p
+				margin-bottom 4px
 			span
 				display block
 				width 20%
 				margin 0 20px
 				height 1px
-				background-color white
+				background-color #E6E6E6
 		input
 			pointer-events all
 </style>

@@ -1,10 +1,10 @@
 <template>
 	<div class="fullscreen">
-    <div class="main-layout">
-      <h2> Название файла.xlsx </h2>
+    <div class="section">
+      <h2> {{ filename }} </h2>
       <div class="chart">
         <span class="descr">Статистика по проверенным сведениям и результаты проверок</span>
-        <span class="total"><h1>{{total}}</h1> адресов</span>
+        <span class="total"><h1>{{totalCount}}</h1> адресов</span>
         <vue-chartist :data="data" :options="options" type="Pie" :listener="listener"></vue-chartist>
         <div class="legend">
           <p v-for="(info, i) in legend" :key="info"><span :class="'mark-' + i"/>{{ info }}</p>
@@ -12,12 +12,27 @@
       </div>
     </div>
     <br>
-    <div class="main-layout">
+    <div class="section">
+      <div class="filters">
+        <div class="filter" :class="{ 'active': filter.active }" v-for="filter in filters" :key="filter.name" @click="setFilter(filter)">{{filter.name}}</div>
+      </div>
+    </div>
+    <br>
+    <div class="section">
+      <div class="adresses">
+        <div v-for="address in addressesFiltered" :key="address.addr.guid" 
+            class="address"
+            :class="{ 'expanded': address.expanded }"
+            @click="expand(address)">{{address.addr.outaddr}}</div>
+      </div>
+    </div>
+    <br>
+    <div class="section">
       <b-button-group>
           <b-button class="btn-theme-blue"
                     size="md"
                     @click="download()">
-                    <b-icon-arrow-down-circle class="mr-2"/>Выгрузить
+                    <b-icon-arrow-down-circle class="mr-2"/>{{ downloadLabelComputed }}
           </b-button>
           <b-dropdown right class="btn-theme-blue">
             <b-dropdown-item @click="download('xlsx')">.xlsx</b-dropdown-item>
@@ -32,9 +47,21 @@
 import VueChartist from 'v-chartist'
 import Chartist from 'chartist'
 export default {
+  props: {
+    total: String,
+    done: String,
+    errors: String,
+    verify: String
+  },
   data () {
     return {
       addresses: [],
+      filters: [
+        { name: 'Распознано', active: false, delivery: 0, filter: ({addr}) => (addr.delivery === 0) },
+        { name: 'Не распознано', active: false, delivery: 2, filter: ({addr}) => (addr.delivery === 2) },
+        { name: 'Частично распознано', active: true, delivery: 1, filter: ({addr}) => (addr.delivery === 1) },
+        { name: 'Все', active: false, filter: () => { return true } }
+      ],
       listener: {
         draw (data) {
           if (data.type === 'slice') {
@@ -68,9 +95,9 @@ export default {
         }
       },
       legend: ['Распознано', 'Не распознано', 'Частично распознано'],
-      total: 325,
+      totalCount: this.total,
       data: {
-        series: [232, 88, 5]
+        series: [this.done, this.errors, this.verify]
       },
       options: {
         height: '400px',
@@ -82,18 +109,46 @@ export default {
     }
 	},
 	created () {
-		document.addEventListener('dragenter', this.handleDragEnter)
+    document.addEventListener('dragenter', this.handleDragEnter)
+    this.getAll()
 	},
   methods: {
-    getWithErrors () {
-      return this.$bs.getCleanAddressesWithErrors()
-        .then(data => { this.addressesWithError = data || [] })
+    expand (address) {
+      address.expanded = !address.expanded
+    },
+    setFilter (filter) {
+      this.filters.forEach(f => (f.active = f.name === filter.name))
+    },
+    getAll () {
+      return this.$bs.getCleanAddresses()
+        .then(data => { this.addresses = data.map(item => ({ ...item, expanded: false })) })
     },
     // Скачиваем файл
     download (type = 'xlsx') {
-      this.$bs.downloadCleanAddresses(type)
+      this.$bs.downloadCleanAddresses(type, this.activeFilter.delivery)
     }
-	},
+  },
+  computed: {
+    addressesFiltered () {
+      // return this.addresses.filter(this.activeFilter.filter)
+      return []
+    },
+    filename () {
+      return this.$root.fileName || 'Результат обработки'
+    },
+    activeFilter () {
+      return this.filters.find(f => f.active)
+    },
+    downloadLabelComputed () {
+      const matrix = {
+        'Распознано': 'Выгрузить распознанные адреса',
+        'Не распознано': 'Выгрузить нераспознанные адреса',
+        'Частично распознано': 'Выгрузить частично распознанные адреса',
+        'Все': 'Выгрузить все'
+      }
+      return matrix[this.activeFilter.name]
+    }
+  },
 	components: {
     'vue-chartist': VueChartist
 	}
@@ -127,13 +182,28 @@ export default {
 </style>
 
 <style  lang="stylus" scoped>
+.filters
+  display flex
+  .filter
+    padding 8px 30px
+    background-color #F7F8FA
+    border-radius 10px
+    color black
+    font-weight 500
+    font-size .8rem
+    margin-right 20px
+    cursor pointer
+    transition background-color .15s ease
+    &.active
+      background-color #0055A6
+      color white
 .fullscreen
   display flex
   flex-direction column
   align-items center
   min-height 80vh
 
-.main-layout
+.section
   display flex
   flex-direction column
   width 800px
@@ -144,6 +214,7 @@ export default {
     margin 30px 0
 
   .chart
+    font-weight 500
     display flex
     justify-content center
     position relative
