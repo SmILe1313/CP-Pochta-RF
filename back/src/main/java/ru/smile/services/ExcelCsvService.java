@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import ru.smile.entities.CleanAddress;
+import ru.smile.entities.UserAuth;
 import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
 import ru.smile.entities.ValidateResponseCounts;
@@ -24,12 +24,9 @@ import ru.smile.utils.ExcelHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional

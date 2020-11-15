@@ -15,16 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import ru.smile.entities.CleanAddress;
-import ru.smile.entities.ValidateResponse;
 import ru.smile.entities.ValidateResponseCounts;
 import ru.smile.services.ExcelCsvService;
 import ru.smile.utils.CsvHelper;
 import ru.smile.utils.ExcelHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin
 @Controller

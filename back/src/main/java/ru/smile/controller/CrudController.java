@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
-import ru.smile.entities.CleanAddress;
-import ru.smile.entities.ToCleanAddress;
+
 import ru.smile.entities.User;
 import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
@@ -29,10 +28,6 @@ import java.util.List;
 public class CrudController {
 
   @Autowired private UserService userService;
-
-//  @Autowired private CleanAddresService cleanAddresService;
-//
-//  @Autowired private ToCleanAddresService toCleanAddresService;
 
   @Autowired private ValidateResponseService validateResponseService;
 

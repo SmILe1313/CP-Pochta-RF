@@ -25,23 +25,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class JpaConfig {
 
-//  @Bean
-//  public DataSource dataSource() {
-//
-//    BasicDataSource dataSourceConfig = new BasicDataSource();
-//    dataSourceConfig.setDriverClassName("org.postgresql.Driver");
-//
-//    dataSourceConfig.setUrl("jdbc:postgresql://127.0.0.1:5432/databasename");
-//    dataSourceConfig.setUsername("username");
-//    dataSourceConfig.setValidationQuery("SELECT 1");
-//    dataSourceConfig.setPassword("password");
-//
-//    return dataSourceConfig;
-//
-////    EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-////    return builder.setType(EmbeddedDatabaseType.HSQL).build();
-//  }
-
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -61,15 +44,13 @@ public class JpaConfig {
     vendorAdapter.setDatabasePlatform(org.hibernate.dialect.PostgreSQL95Dialect.class.getName());
 
     LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-//    LocalEntityManagerFactoryBean factoryBean = new LocalEntityManagerFactoryBean();
-//    factoryBean.setPersistenceUnitName("app");
+
     entityManagerFactoryBean.setDataSource(dataSource());
     entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
     entityManagerFactoryBean.setPackagesToScan("ru.smile.entities");
     entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
     entityManagerFactoryBean.setJpaProperties(hibProperties());
     entityManagerFactoryBean.setPersistenceUnitName("default");
-//    entityManagerFactoryBean.afterPropertiesSet();
 
     return entityManagerFactoryBean;
   }
@@ -98,8 +79,6 @@ public class JpaConfig {
       if(s.startsWith("hibernate."))
         properties.put(p, allproperties.get(p));
     }
-
-//    properties.put("hibernate.physical_naming_strategy", getNamingStrategyClass().getName()); //стратегия именования таблиц и полей
 
     return properties;
   }

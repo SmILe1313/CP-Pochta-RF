@@ -8,7 +8,7 @@ const HTTP = axios.create({
   xsrfHeaderName: 'Csrf-Token',
   // withCredentials: true,
   maxContentLength: 50000000,
-  timeout: 150000
+  timeout: 99999999
 })
 
 const backLink = 'http://192.169.6.10:9000'
@@ -146,7 +146,7 @@ const bs = {
 
   // Получить гуглдокс
   getGoogleDocsExeclDataAsync(googleLink) {
-    return this.getExeclDataAsync(backLink + apiExcel + googleLink)
+    return this.getDataAsync(apiExcel + googleLink)
   },
 
   // Общий метод для экселя

@@ -6,8 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.smile.entities.CleanAddress;
-import ru.smile.entities.ToCleanAddress;
+import ru.smile.entities.UserAuth;
 import ru.smile.entities.ValidateRequest;
 import ru.smile.entities.ValidateResponse;
 
@@ -68,31 +67,6 @@ public class PochtaService {
 
   public UUID getResponseUUID() {
     return UUID.randomUUID();
-  }
-
-  // Обратно в одну строку
-  public ToCleanAddress toOneString(CleanAddress cleanAddress) {
-    return new ToCleanAddress(
-      cleanAddress.getId(),
-      cleanAddress.getAddressType() + ' ' + // Тип адреса
-      cleanAddress.getArea() + ' ' + // Район
-      cleanAddress.getRegion() + ' ' + // Область, регион
-      cleanAddress.getPlace() + ' ' + // Населенный пункт
-      cleanAddress.getLocation() + ' ' + // Микрорайон
-      cleanAddress.getStreet() + ' ' + // Часть адреса: Улица
-      cleanAddress.getHouse() + ' ' + // Часть адреса: Номер здания
-      cleanAddress.getBuilding() + ' ' + // Часть здания: Строение
-      cleanAddress.getCorpus() + ' ' + // Часть здания: Корпус
-      cleanAddress.getSlash() + ' ' + // Часть здания: Дробь
-      cleanAddress.getLetter() + ' ' + // Часть здания: Литера
-      cleanAddress.getRoom() + ' ' + // Часть здания: Номер помещения
-      cleanAddress.getIndex() + ' ' + // Почтовый индекс
-      cleanAddress.getHotel() + ' ' + // Название гостиницы
-      cleanAddress.getNumAddressType() + ' ' + // Номер для а/я, войсковая часть, войсковая часть ЮЯ,
-      cleanAddress.getQualityCode() + ' ' + // Код качества нормализации адреса
-      cleanAddress.getValidationCode() + ' ' + // Код проверки нормализации адреса
-      cleanAddress.getOriginalAddress() // Оригинальные адрес одной строкой
-    );
   }
 
 }
