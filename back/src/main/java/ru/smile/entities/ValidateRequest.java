@@ -84,6 +84,13 @@ public class ValidateRequest {
     this.addr = addr;
   }
 
+  public ValidateRequest(Long id, String version, String reqId, List<AddrRequest> addr) {
+    this.id = id;
+    this.version = version;
+    this.reqId = reqId;
+    this.addr = addr;
+  }
+
   public Long getUserId() {
     return userId;
   }

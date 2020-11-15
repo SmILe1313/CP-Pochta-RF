@@ -69,6 +69,12 @@ public class ExcelCsvController {
     return new ResponseEntity<ValidateResponseCounts>(new ValidateResponseCounts(), HttpStatus.BAD_REQUEST);
   }
 
+  @GetMapping("/clean/google/{googleLink}")
+  public ResponseEntity<ValidateResponseCounts> getGoogleSpreadsheet(@PathVariable(value = "googleLink") String googleLink) {
+    ValidateResponseCounts validateResponseCounts = excelCsvService.getGoogleFile(googleLink);
+    return new ResponseEntity<>(validateResponseCounts, HttpStatus.OK);
+  }
+
   @GetMapping("/download/xlsx/{delivery}")
   public ResponseEntity<InputStreamResource> getFileXlsx(@PathVariable(value = "delivery") int delivery) {
     String filename = "The_normalized_addresses.xlsx";

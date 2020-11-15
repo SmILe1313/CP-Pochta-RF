@@ -2,10 +2,10 @@ package ru.smile.entities;
 
 public class ValidateResponseCounts {
 
-  private Long good;
-  private Long middle;
-  private Long bad;
-  private Long total;
+  private Long good = 0L;
+  private Long middle = 0L;
+  private Long bad = 0L;
+  private Long total = 0L;
 
   public ValidateResponseCounts() {
   }

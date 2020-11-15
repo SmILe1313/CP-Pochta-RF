@@ -144,6 +144,11 @@ const bs = {
     return this.getDataAsync("toclean/all")
   },
 
+  // Получить гуглдокс
+  getGoogleDocsExeclDataAsync(googleLink) {
+    return this.getExeclDataAsync(backLink + apiExcel + googleLink)
+  },
+
   // Общий метод для экселя
   getExeclDataAsync (apiLink) {
     return HTTP.get(apiLink, {

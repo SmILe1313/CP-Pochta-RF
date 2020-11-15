@@ -31,7 +31,8 @@
 							class="inp-theme-whiteblue"
 							v-model="file.link"
 							type="text"
-							placeholder="Вставьте URL"/>
+							placeholder="Вставьте URL"
+							@change="uploadGoogle()"/>
 					</div>
 				</div>
 		</div>
@@ -92,7 +93,7 @@ export default {
 		handleDragOver () {
       this.dragHover = true
     },
-		
+
     handleDrop (e) {
 			this.dragHover = false
 			this.showDropZone = false
@@ -122,7 +123,28 @@ export default {
 		setFile (e) {
 			const [file] = [...e.target.files]
 			this.file.data = file
-		}
+		},
+
+		// загрузка через гуглдокс
+		uploadGoogle () {
+      this.loading = true
+			let finalLink = this.file.link.replace('https://docs.google.com/spreadsheets/d/', '')
+			finalLink = finalLink.replace('/edit#gid=0','')
+      this.$bs.getGoogleDocsExeclDataAsync('/clean/google/' + finalLink)
+        .then(({ bad, good, middle, total }) => {
+					this.$root.fileName = 'GoogleDoc'
+					const counts = {
+						total,
+						done: good,
+						errors: bad,
+						verify: middle
+					}
+					setTimeout(() => {
+						this.loading = false
+						this.$emit('uploaded', counts)
+          }, 1000)
+				})
+			}
 	},
 	computed: {
 		fileName () {

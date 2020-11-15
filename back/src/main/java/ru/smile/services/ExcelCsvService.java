@@ -1,8 +1,16 @@
 package ru.smile.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import ru.smile.entities.CleanAddress;
 import ru.smile.entities.ValidateRequest;
@@ -15,8 +23,13 @@ import ru.smile.utils.ExcelHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,9 +58,13 @@ public class ExcelCsvService {
 //    "Оригинальные адрес одной строкой"};
 public static String[] HEADERs =  { "Первоначальный адрес одной строкой", "Найденный адрес одной строкой"};
 
-  public ValidateResponseCounts saveAndNormalizeXlsx(MultipartFile file) {
+  public ValidateResponseCounts saveAndNormalizeXlsx(MultipartFile file) throws IOException {
+    return saveAndNormalizeXlsx(file.getInputStream());
+  }
+
+  public ValidateResponseCounts saveAndNormalizeXlsx(InputStream is) {
     try {
-      List<ValidateRequest> validateRequestList = excelHelper.excelToValidateRequest(file.getInputStream(), userService);
+      List<ValidateRequest> validateRequestList = excelHelper.excelToValidateRequest(is, userService);
       validateRequestList.forEach(validateRequest -> addrRequestRepository.saveAll(validateRequest.getAddr()));
       validateRequestRepository.saveAll(validateRequestList);
 
@@ -111,6 +128,39 @@ public static String[] HEADERs =  { "Первоначальный адрес о�
 
   public List<ValidateResponse> getAllValidateResponses() {
     return validateResponseService.getAll();
+  }
+
+  public ValidateResponseCounts getGoogleFile(String googleLink) {
+    String startLink = "https://docs.google.com/spreadsheets/d/";
+    String endLink = "/export?format=xlsx&gid=0";
+    if (googleLink.isEmpty()) {
+      return null;
+    }
+
+    String googleDoc = startLink + googleLink + endLink;
+    InputStream inputStream = null;
+
+    try {
+      RestTemplate restTemplate = new RestTemplate();
+      restTemplate.getMessageConverters().add(
+        new ByteArrayHttpMessageConverter());
+
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+
+      HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+      ResponseEntity<byte[]> response = restTemplate.exchange(googleDoc,
+        HttpMethod.GET, entity, byte[].class, "1");
+
+      if (response.getStatusCode() == HttpStatus.OK) {
+         inputStream = new ByteArrayInputStream(response.getBody());
+      }
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+    return saveAndNormalizeXlsx(inputStream);
   }
 }
 
