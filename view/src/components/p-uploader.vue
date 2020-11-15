@@ -130,6 +130,7 @@ export default {
       this.loading = true
 			let finalLink = this.file.link.replace('https://docs.google.com/spreadsheets/d/', '')
 			finalLink = finalLink.replace('/edit#gid=0','')
+			finalLink = finalLink.replace('/edit?usp=sharing','')
       this.$bs.getGoogleDocsExeclDataAsync('/clean/google/' + finalLink)
         .then(({ bad, good, middle, total }) => {
 					this.$root.fileName = 'GoogleDoc'
